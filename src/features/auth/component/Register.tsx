@@ -31,7 +31,7 @@ const Register = () => {
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-5">
           <Image
-            src="/images/logo.png"
+            src="/images/logo1.png"
             alt="Company Logo"
             width={120}
             height={120}

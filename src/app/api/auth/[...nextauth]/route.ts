@@ -2,8 +2,6 @@
 
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-const baseUrl =
-  process.env.NEXT_PUBLIC_API_URL;
 
 declare module "next-auth" {
   interface Session {
@@ -38,6 +36,38 @@ declare module "next-auth/jwt" {
     role: string;
     accessToken: string;
     refreshToken: string;
+    accessTokenExpires: number;
+    error?: "RefreshAccessTokenError";
+  }
+}
+
+import { loginApi, refreshTokenApi } from "@/features/auth/api/login.api";
+import { JWT } from "next-auth/jwt";
+
+/**
+ * Takes a token, and returns a new token with updated
+ * `accessToken` and `accessTokenExpires`. If an error occurs,
+ * returns the old token and an error property
+ */
+async function refreshAccessToken(token: JWT): Promise<JWT> {
+  try {
+    const data = await refreshTokenApi(token.refreshToken);
+
+    console.log("Refresh token response:", data);
+
+    return {
+      ...token,
+      accessToken: data.data.accessToken,
+      accessTokenExpires: Date.now() + 60 * 60 * 1000, // Assume 1 hour for now
+      refreshToken: data.data.user.refreshToken || token.refreshToken, // Fallback to old if new not provided
+    };
+  } catch (error) {
+    console.error("RefreshAccessTokenError", error);
+
+    return {
+      ...token,
+      error: "RefreshAccessTokenError",
+    };
   }
 }
 
@@ -55,21 +85,12 @@ const handler = NextAuth({
         }
 
         try {
-          const res = await fetch(`${baseUrl}/auth/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              email: credentials.email,
-              password: credentials.password,
-            }),
+          const data = await loginApi({
+            email: credentials.email,
+            password: credentials.password,
           });
 
-          const data = await res.json();
           console.log("API Login Response:", JSON.stringify(data, null, 2));
-
-          if (!res.ok) {
-            throw new Error(data.message || "Login failed");
-          }
 
           const user = data.data?.user;
           const accessToken = data.data?.accessToken;
@@ -83,17 +104,18 @@ const handler = NextAuth({
 
           // Return the object that NextAuth will use as 'user' in the jwt callback
           return {
-            id: user._id || user.id, // Ensure we get the ID
-            name: user.name,
+            id: user._id, // Ensure we get the ID
+            name: user.name || "",
             email: user.email,
             image: user.profileImage, // Map profileImage to image
             role: user.role,
             token: accessToken, // We attach the token here as a property of the user
             refreshToken: user.refreshToken,
           };
-        } catch (error) {
+        } catch (error: unknown) {
           console.error("Authorize error:", error);
-          throw new Error("Invalid email or password");
+          const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || (error as Error).message || "Invalid email or password";
+          throw new Error(errorMessage);
         }
       },
     }),
@@ -115,6 +137,7 @@ const handler = NextAuth({
         token.role = user.role;
         token.accessToken = user.token;
         token.refreshToken = user.refreshToken;
+        token.accessTokenExpires = Date.now() + 60 * 60 * 1000; // 1 hour expiry
       }
 
       // Update session trigger
@@ -122,7 +145,13 @@ const handler = NextAuth({
         return { ...token, ...session.user };
       }
 
-      return token;
+      // Return previous token if the access token has not expired yet
+      if (Date.now() < token.accessTokenExpires) {
+        return token;
+      }
+
+      // Access token has expired, try to update it
+      return refreshAccessToken(token);
     },
 
     async session({ session, token }) {
@@ -130,14 +159,16 @@ const handler = NextAuth({
         console.log("Session callback - Token:", token);
         session.user = {
           ...session.user,
-          id: token.id as string,
-          name: token.name as string,
-          email: token.email as string,
-          image: token.image as string,
-          role: token.role as string,
+          id: token.id,
+          name: token.name,
+          email: token.email,
+          image: token.image,
+          role: token.role,
         };
-        session.accessToken = token.accessToken as string;
-        session.refreshToken = token.refreshToken as string;
+        session.accessToken = token.accessToken;
+        session.refreshToken = token.refreshToken;
+        // Use a more standard way to pass the error if possible, or keep it safe
+        (session as { error?: string }).error = token.error;
       }
       return session;
     },

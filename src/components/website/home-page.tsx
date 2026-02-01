@@ -7,10 +7,11 @@ import { FAQ } from "./Common/faq";
 export default function HomePage() {
   return (
     <>
-      <Hero type="home" />
-      <CategoryGrid />
+    
+       <Hero type="home" />
+      {/*<CategoryGrid />
       <Features />
-      <FAQ />
+      <FAQ /> */}
     </>
   );
 }
