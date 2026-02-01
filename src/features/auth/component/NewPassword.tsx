@@ -57,7 +57,7 @@ const NewPassword = () => {
                 {/* Logo */}
                 <div className="flex flex-col items-center justify-center gap-2 mb-6">
                     <Image
-                        src="/images/logo.png"
+                        src="/images/logo1.png"
                         alt="sktchLABS"
                         width={180}
                         height={50}

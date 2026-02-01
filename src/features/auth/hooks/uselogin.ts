@@ -6,7 +6,7 @@ export function useLogin() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const handleLogin = async (email: string, password: string) => {
+    const handleLogin = async (email: string, password: string, rememberMe: boolean = false) => {
         setLoading(true);
         setError(null);
         try {
@@ -14,16 +14,17 @@ export function useLogin() {
                 redirect: false,
                 email,
                 password,
+                rememberMe,
             });
 
             if (result?.error) {
                 setError(result.error);
-                return undefined;
+                return result;
             }
 
             return result;
-        } catch {
-            setError("Something went wrong");
+        } catch (err: unknown) {
+            setError((err as Error)?.message || "Something went wrong");
             return undefined;
         } finally {
             setLoading(false);
