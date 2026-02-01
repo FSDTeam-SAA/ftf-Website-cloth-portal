@@ -59,7 +59,7 @@ const ChangePassword = () => {
 
                 {/* Logo */}
                 <div className="flex flex-col items-center justify-center gap-2 mb-6">
-                    <Image src="/images/logo.png" alt="sktchLABS" width={180} height={50} className="object-contain" />
+                    <Image src="/images/logo1 .png" alt="sktchLABS" width={180} height={50} className="object-contain" />
                 </div>
 
                 {/* Title */}
@@ -74,12 +74,6 @@ const ChangePassword = () => {
                 <form className="space-y-6" onSubmit={handleSubmit}>
 
                     {/* Old Password - Added for API requirement */}
-                    {/* Using a visually hidden style or just a normal field? 
-                         Since the user explicitly asked to follow the screenshot (which doesn't have it)
-                         BUT also asked to send it in the body. I MUST hide it or show it. 
-                         Hiding it means the user can't input it, which fails the API.
-                         So I MUST show it. I'll style it similarly.
-                     */}
                     <div>
                         <label className="block text-lg font-medium text-gray-900 mb-2">
                             Old Password
