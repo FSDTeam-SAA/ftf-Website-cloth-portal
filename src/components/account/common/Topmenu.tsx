@@ -8,8 +8,6 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useSession, signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
-import { useContent } from "@/features/category-page/hooks/use-content";
-import { CategoryContent } from "@/features/category-page/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -23,7 +21,7 @@ import {
 const menuItems = [
   { href: "/", label: "Home" },
   { href: "/uniforms", label: "Catalog" },
-  { href: "/account", label: "Account" },
+  { href: "/profile", label: "Account" },
   { href: "/orders", label: "Orders" },
 ];
 
@@ -32,8 +30,6 @@ export default function Navbar() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const [showDropdown, setShowDropdown] = useState(false);
-  const { data: contentData } = useContent({ limit: 12 });
-  const categories = contentData?.data || [];
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const isActive = (href: string) => (href === "/" ? pathname === href : pathname.startsWith(href));
@@ -85,7 +81,9 @@ export default function Navbar() {
 
               {/* Points/Currency Icon - Matches the green '$' in screenshot */}
               <div className="flex items-center text-green-600 font-bold">
-                <DollarSign size={24} strokeWidth={3} />
+                <Link href="/profile/balance">
+                  <DollarSign size={24} strokeWidth={3} />
+                </Link>
               </div>
 
               {/* User Profile Info */}
