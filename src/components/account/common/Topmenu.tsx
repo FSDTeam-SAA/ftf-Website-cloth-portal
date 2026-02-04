@@ -23,6 +23,8 @@ import {
 const menuItems = [
   { href: "/", label: "Home" },
   { href: "/uniforms", label: "Catalog" },
+  { href: "/account", label: "Account" },
+  { href: "/orders", label: "Orders" },
 ];
 
 export default function Navbar() {
@@ -102,10 +104,7 @@ export default function Navbar() {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 mt-2">
-                  <DropdownMenuLabel className="cursor-pointer">My Account</DropdownMenuLabel>
-                  <DropdownMenuLabel>Personal Information </DropdownMenuLabel>
-                  <DropdownMenuLabel>Orders </DropdownMenuLabel>
-                  <DropdownMenuLabel>Change Password </DropdownMenuLabel>
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => signOut()}>
                     <LogOut className="mr-2 h-4 w-4" /> Log Out

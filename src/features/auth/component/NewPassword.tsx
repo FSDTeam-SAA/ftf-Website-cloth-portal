@@ -66,7 +66,7 @@ const NewPassword = () => {
                 </div>
 
                 {/* Title */}
-                <h2 className="text-center text-[#E88741] text-3xl font-bold mb-2">
+                <h2 className="text-center text-foreground text-3xl font-bold mb-2">
                     Reset Your Password
                 </h2>
                 <p className="text-center text-gray-500 mb-10 text-lg">
@@ -140,7 +140,7 @@ const NewPassword = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full mt-8 bg-[#FA923C] hover:bg-[#F97316] text-white text-lg font-medium py-4 rounded-lg transition-colors disabled:opacity-50"
+                        className="w-full mt-8 bg-primary-foreground hover:bg-foreground/80  cursor-pointer text-white text-lg font-medium py-4 rounded-lg transition-colors disabled:opacity-50"
                     >
                         {loading ? "Saving Password..." : "Save Password"}
                     </button>

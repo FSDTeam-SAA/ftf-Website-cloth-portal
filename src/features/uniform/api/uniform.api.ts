@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import { ApiResponse, Product, ProductCreateInput } from "../types/uniform.types";
+import { ApiResponse, Product, ProductCreateInput, Role } from "../types/uniform.types";
 
 /**
  * API service for Uniform/Product related operations
@@ -65,6 +65,41 @@ export const uniformApi = {
         } catch (err) {
             console.error(`Error creating product for user ${userId}:`, err);
             throw new Error("Failed to create product");
+        }
+    },
+
+
+    // get product by role 
+    getProductByRole: async (accessToken: string, roleId: string): Promise<ApiResponse<Product[]>> => {
+        try {
+            const res = await api.get(`/product/user/${roleId}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            return res.data;
+        } catch (err) {
+            console.error(`Error fetching products by role ID ${roleId}:`, err);
+            throw new Error(`Failed to fetch products by role`);
+        }
+    },
+
+    /**
+     * Fetch all roles
+     * @param accessToken - The authentication token
+     * @returns Promise with list of all roles
+     */
+    getAllRoles: async (accessToken: string): Promise<ApiResponse<Role[]>> => {
+        try {
+            const res = await api.get("/role", {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            return res.data;
+        } catch (err) {
+            console.error("Error fetching all roles:", err);
+            throw new Error("Failed to fetch all roles");
         }
     },
 };
