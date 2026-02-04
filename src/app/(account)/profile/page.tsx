@@ -1,9 +1,10 @@
+import PersonalInformation from '@/components/account/pages/PersonalInformation'
 import React from 'react'
 
 const page = () => {
   return (
     <div>
-        user profile page
+        <PersonalInformation />
     </div>
   )
 }

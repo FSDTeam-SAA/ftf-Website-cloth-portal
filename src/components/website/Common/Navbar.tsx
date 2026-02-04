@@ -3,13 +3,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, X, ChevronDown, User, LogOut, Package, Key, ShoppingBag, DollarSign } from "lucide-react";
+import {
+  Menu,
+  X,
+  ChevronDown,
+  User,
+  LogOut,
+  Package,
+  Key,
+  ShoppingBag,
+  DollarSign,
+} from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useSession, signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
-import { useContent } from "@/features/category-page/hooks/use-content";
-import { CategoryContent } from "@/features/category-page/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -30,16 +38,14 @@ export default function Navbar() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const [showDropdown, setShowDropdown] = useState(false);
-  const { data: contentData } = useContent({ limit: 12 });
-  const categories = contentData?.data || [];
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const isActive = (href: string) => (href === "/" ? pathname === href : pathname.startsWith(href));
+  const isActive = (href: string) =>
+    href === "/" ? pathname === href : pathname.startsWith(href);
 
   return (
     <nav className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
       <div className="container mx-auto px-4 lg:px-12 flex justify-between items-center h-20">
-
         {/* 1. Logo Section */}
         <Link href="/" className="flex items-center">
           <Image
@@ -55,14 +61,17 @@ export default function Navbar() {
         {/* 2. Desktop Navigation Links */}
         <ul className="hidden md:flex space-x-10 font-medium text-gray-700">
           {menuItems.map((item) => {
-            const href = item.label === "Catalog" && status !== "authenticated" ? "/login" : item.href;
+            const href =
+              item.label === "Catalog" && status !== "authenticated"
+                ? "/login"
+                : item.href;
             return (
               <li key={item.href}>
                 <Link
                   href={href}
                   className={cn(
                     "transition-colors hover:text-green-600",
-                    isActive(item.href) ? "text-black font-bold" : ""
+                    isActive(item.href) ? "text-black font-bold" : "",
                   )}
                 >
                   {item.label}
@@ -77,13 +86,19 @@ export default function Navbar() {
           {status === "authenticated" ? (
             <div className="flex items-center space-x-5">
               {/* Shopping Bag Icon */}
-              <Link href="/cart" className="text-black hover:text-green-600 transition-colors">
+              <Link
+                href="/cart"
+                className="text-black hover:text-green-600 transition-colors"
+              >
                 <ShoppingBag size={24} strokeWidth={2.5} />
               </Link>
 
               {/* Points/Currency Icon - Matches the green '$' in screenshot */}
               <div className="flex items-center text-green-600 font-bold">
-                <DollarSign size={24} strokeWidth={3} />
+                <Link href="/profile/balance">
+
+                  <DollarSign size={24} strokeWidth={3} />
+                </Link>
               </div>
 
               {/* User Profile Info */}
@@ -102,12 +117,32 @@ export default function Navbar() {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 mt-2">
-                  <DropdownMenuLabel className="cursor-pointer">My Account</DropdownMenuLabel>
-                  <DropdownMenuLabel>Personal Information </DropdownMenuLabel>
-                  <DropdownMenuLabel>Orders </DropdownMenuLabel>
-                  <DropdownMenuLabel>Change Password </DropdownMenuLabel>
+                  <DropdownMenuLabel className="cursor-pointer">
+                    <Link href="/profile">My Account</Link>
+                  </DropdownMenuLabel>
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile" className="cursor-pointer">
+                      Personal Information
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile/orders" className="cursor-pointer">
+                      Orders
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/profile/change-password"
+                      className="cursor-pointer"
+                    >
+                      Change Password
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => signOut()}>
+                  <DropdownMenuItem
+                    onClick={() => signOut()}
+                    className="cursor-pointer"
+                  >
                     <LogOut className="mr-2 h-4 w-4" /> Log Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -117,7 +152,9 @@ export default function Navbar() {
             /* Logged Out View */
             <div className="hidden md:flex items-center space-x-3">
               <Link href="/login">
-                <Button variant="ghost" className="font-semibold">Log In</Button>
+                <Button variant="ghost" className="font-semibold">
+                  Log In
+                </Button>
               </Link>
             </div>
           )}
@@ -126,12 +163,17 @@ export default function Navbar() {
           <div className="md:hidden">
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon"><Menu /></Button>
+                <Button variant="ghost" size="icon">
+                  <Menu />
+                </Button>
               </SheetTrigger>
               <SheetContent>
                 <div className="flex flex-col space-y-4 mt-10">
                   {menuItems.map((item) => {
-                    const href = item.label === "Catalog" && status !== "authenticated" ? "/login" : item.href;
+                    const href =
+                      item.label === "Catalog" && status !== "authenticated"
+                        ? "/login"
+                        : item.href;
                     return (
                       <Link
                         key={item.href}
