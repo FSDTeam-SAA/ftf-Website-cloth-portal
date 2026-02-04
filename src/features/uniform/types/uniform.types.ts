@@ -1,6 +1,6 @@
 export interface Product {
     _id: string;
-    image: string;
+    image: string | { url: string; publicId: string };
     title: string;
     type: string;
     description: string;
@@ -30,4 +30,12 @@ export interface ApiResponse<T> {
     message: string;
     statusCode: number;
     data: T;
+}
+
+export interface Role {
+    _id: string;
+    roleTitle: string;
+    images: string;
+    createdAt: string;
+    updatedAt: string;
 }
