@@ -92,7 +92,7 @@ const Verifycode = () => {
                 </div>
 
                 {/* Heading */}
-                <h2 className="text-center text-2xl font-semibold text-orange-500 mb-1">
+                <h2 className="text-center text-2xl font-semibold text-foreground mb-1">
                     Verify Your Account
                 </h2>
                 <p className="text-center text-sm text-gray-500 mb-8">
@@ -144,7 +144,7 @@ const Verifycode = () => {
                                     onClick={handleResend}
                                     disabled={!canResend}
                                     className={`font-medium ${canResend
-                                        ? "text-primary hover:underline cursor-pointer"
+                                        ? "text-foreground hover:underline cursor-pointer"
                                         : "text-gray-400 cursor-not-allowed"
                                         }`}
                                 >
@@ -155,8 +155,8 @@ const Verifycode = () => {
 
 
                         <button
-                            className={`w-full bg-primary text-white py-3 rounded-md text-lg font-medium transition
-    ${loading ? "opacity-60 cursor-not-allowed" : "hover:bg-primary/80 cursor-pointer"}
+                            className={`w-full bg-primary-foreground hover:bg-foreground/80 text-white py-3 rounded-md text-lg font-medium transition
+    ${loading ? "opacity-60 cursor-not-allowed" : "hover:bg-primary-foreground/80 cursor-pointer"}
   `}
                             type="submit"
                             disabled={loading}
