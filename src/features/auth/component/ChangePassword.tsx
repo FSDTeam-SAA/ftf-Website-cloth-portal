@@ -155,7 +155,7 @@ const ChangePassword = () => {
                     {/* Button */}
                     <button
                         type="submit"
-                        className="w-full mt-8 bg-[#FA923C] hover:bg-[#F97316] text-white text-lg font-medium py-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                        className="w-full mt-8 bg-primary-foreground hover:bg-foreground/80 text-white text-lg font-medium py-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                         disabled={loading}
                     >
                         {loading ? 'Saving Changes...' : 'Save Changes'}

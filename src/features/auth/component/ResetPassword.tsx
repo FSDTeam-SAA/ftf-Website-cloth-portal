@@ -38,7 +38,7 @@ const ResetPassword = () => {
         </div>
 
         {/* Heading */}
-        <h2 className="text-center text-2xl font-semibold text-orange-500 mb-1">
+        <h2 className="text-center text-2xl font-semibold text-foreground mb-1">
           Reset Password
         </h2>
         <p className="text-center text-base text-gray-500 mb-8">
@@ -72,7 +72,7 @@ const ResetPassword = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-4 bg-primary cursor-pointer hover:bg-primary/80 text-white font-semibold py-3 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full mt-4 bg-primary-foreground hover:bg-foreground/80 text-white font-semibold py-3 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Sending...' : 'Send Code'}
           </button>
