@@ -18,10 +18,10 @@ const PersonalInformation = () => {
         </div>
 
         {/* Right Content - Profile Form */}
-        {profile ? (
+        {profile?.data ? (
           <ProfileForm
-            initialData={profile}
-            key={profile.id || "profile-form"}
+            initialData={profile.data}
+            key={profile.data._id || "profile-form"}
           />
         ) : (
           <div className="flex-1 w-full flex justify-center items-center h-96 bg-white rounded-[2rem] shadow-sm border border-gray-100">

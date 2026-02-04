@@ -15,14 +15,14 @@ import { useUpdateProfile } from "@/features/account/hooks/useUpdateProfile";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+
+
 interface ProfileData {
   firstName?: string;
   lastName?: string;
   phoneNumber?: string;
-  phone?: string;
   email?: string;
   homeAddress?: string;
-  address?: string;
   city?: string;
   region?: string;
 }
@@ -31,6 +31,18 @@ interface ProfileFormProps {
   initialData: ProfileData;
 }
 
+// Addresses extracted from Frame 2147230433.png
+const ADDRESS_OPTIONS = [
+  "21 Industrial Blvd. New Castle, DE 19720",
+  "6380 Flank Dr. #600 Harrisburg, PA 17112",
+  "141 Delta Dr. Suite D Pittsburgh, PA 15238",
+  "1000 Prime Place. Hauppauge, NY 11788",
+  "2 Cranberry Rd. #A5 Parsippany, NJ 07054",
+  "5061 Howerton Way. Suite L Bowie, MD 20715",
+  "10189 Maple Leaf Ct. Ashland, VA 23005",
+  "2551 Eltham Ave. Suite L Norfolk, VA 23513",
+];
+
 export const ProfileForm = ({ initialData }: ProfileFormProps) => {
   const updateProfileMutation = useUpdateProfile();
   const router = useRouter();
@@ -38,9 +50,9 @@ export const ProfileForm = ({ initialData }: ProfileFormProps) => {
   const [formData, setFormData] = useState({
     firstName: initialData.firstName || "",
     lastName: initialData.lastName || "",
-    phoneNumber: initialData.phoneNumber || initialData.phone || "",
+    phoneNumber: initialData.phoneNumber || "",
     email: initialData.email || "",
-    homeAddress: initialData.homeAddress || initialData.address || "",
+    homeAddress: initialData.homeAddress || "",
     city: initialData.city || "",
     region: initialData.region || "Kentucky 39495",
   });
@@ -55,9 +67,8 @@ export const ProfileForm = ({ initialData }: ProfileFormProps) => {
     payload.append("lastName", formData.lastName);
     payload.append("phoneNumber", formData.phoneNumber);
     payload.append("city", formData.city);
-
-    // Note: The original code mentioned API might not support address yet,
-    // but we are preserving the logic as it was.
+    payload.append("homeAddress", formData.homeAddress);
+    payload.append("region", formData.region);
 
     updateProfileMutation.mutate(payload);
   };
@@ -66,9 +77,9 @@ export const ProfileForm = ({ initialData }: ProfileFormProps) => {
     setFormData({
       firstName: initialData.firstName || "",
       lastName: initialData.lastName || "",
-      phoneNumber: initialData.phoneNumber || initialData.phone || "",
+      phoneNumber: initialData.phoneNumber || "",
       email: initialData.email || "",
-      homeAddress: initialData.homeAddress || initialData.address || "",
+      homeAddress: initialData.homeAddress || "",
       city: initialData.city || "",
       region: initialData.region || "Kentucky 39495",
     });
@@ -86,15 +97,28 @@ export const ProfileForm = ({ initialData }: ProfileFormProps) => {
           </p>
         </div>
         {/* Optional Edit Profile Button (Header Action) */}
-        <Button
-          className="bg-black text-white hover:bg-gray-800 rounded-lg px-6 font-bold"
-          onClick={() => {
-            const input = document.getElementById("firstNameInput");
-            input?.focus();
-          }}
-        >
-          Edit Profile
-        </Button>
+
+        <div className=" flex gap-2 justify-between items-center ">
+
+
+          <Button
+            variant="outline"
+            className="h-12 px-8 rounded-xl font-bold border-gray-300 text-gray-600 hover:bg-gray-50"
+            onClick={() => router.push("/profile/payment-history")}
+          >
+            Payment History
+          </Button>
+
+          <Button
+            className="bg-black text-white hover:bg-gray-800 rounded-lg px-6 font-bold"
+            onClick={() => {
+              const input = document.getElementById("firstNameInput");
+              input?.focus();
+            }}
+          >
+            Edit Profile
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
@@ -172,14 +196,20 @@ export const ProfileForm = ({ initialData }: ProfileFormProps) => {
             value={formData.region}
             onValueChange={(val) => setFormData({ ...formData, region: val })}
           >
-            <SelectTrigger className="h-14 bg-gray-50 border-gray-200 rounded-xl focus:ring-0 focus:border-[#ff7a00]">
+            <SelectTrigger className="h-14 bg-white border-gray-200 rounded-xl focus:ring-1 focus:ring-black focus:border-black transition-all">
               <SelectValue placeholder="Select Region" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Kentucky 39495">
-                21 Industrial Blvd, New Castle, DE 19720
-              </SelectItem>
-              <SelectItem value="NY">New York, NY</SelectItem>
+
+            <SelectContent className="max-h-[300px]">
+              {ADDRESS_OPTIONS.map((address) => (
+                <SelectItem
+                  key={address}
+                  value={address}
+                  className="py-3 cursor-pointer focus:bg-slate-50"
+                >
+                  {address}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -187,13 +217,7 @@ export const ProfileForm = ({ initialData }: ProfileFormProps) => {
 
       {/* Footer Buttons */}
       <div className="flex justify-between items-center pt-8 border-t border-gray-100">
-        <Button
-          variant="outline"
-          className="h-12 px-8 rounded-xl font-bold border-gray-300 text-gray-600 hover:bg-gray-50"
-          onClick={() => router.push("/profile/orders")}
-        >
-          Payment History
-        </Button>
+
 
         <div className="flex gap-4">
           <Button
