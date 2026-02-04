@@ -1,9 +1,12 @@
+import PersonalInformation from '@/components/account/pages/PersonalInformation'
+import ProfileCard from '@/components/account/pages/ProfileCard'
 import React from 'react'
 
 const page = () => {
   return (
     <div>
-        user profile page
+        <ProfileCard />
+        <PersonalInformation />
     </div>
   )
 }
