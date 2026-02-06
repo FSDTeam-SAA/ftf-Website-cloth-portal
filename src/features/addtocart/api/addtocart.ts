@@ -2,11 +2,11 @@
 
 import { api } from "@/lib/api";
 
-import { AddToCartRequest, CartResponse } from "../types";
+import { AddToCartRequest, CartResponse, CartData } from "../types";
+import { ApiResponse } from "../../uniform/types/uniform.types";
 
-export const addToCartApi = async (accessToken: string, cartData: AddToCartRequest): Promise<void> => {
+export const addToCartApi = async (accessToken: string, cartData: AddToCartRequest): Promise<ApiResponse<CartData>> => {
     try {
-        // Correct order: URL, Data, then Config (Headers)
         const response = await api.post('/cart', cartData, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -14,6 +14,7 @@ export const addToCartApi = async (accessToken: string, cartData: AddToCartReque
         });
 
         console.log('Product added to cart:', response.data);
+        return response.data;
     } catch (error) {
         console.error('Error adding product to cart:', error);
         throw error;

@@ -14,7 +14,7 @@ export interface AddToCartRequest {
 
 export interface PopulatedCartProduct {
     productId: {
-        image: string;
+        image: string | { url: string; publicId: string };
         _id: string;
         title: string;
         type: string;

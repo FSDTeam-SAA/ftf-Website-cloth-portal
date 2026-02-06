@@ -1,22 +1,26 @@
 "use client";
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { addToCartApi } from '../api/addtocart';
 import { useGetCart } from '../hooks/useGetCart';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const Addtocart = () => {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const { data: cartResponse, isLoading: isCartLoading } = useGetCart();
 
   const cartData = cartResponse?.data;
-  const cartItems = cartData?.products || [];
+  const cartItems = useMemo(() => cartData?.products || [], [cartData]);
 
   useEffect(() => {
-    if (cartData) {
-      console.log("Current Cart Data in Component:", cartData);
+    if (cartResponse) {
+      console.log("Full Cart API Response:", cartResponse);
+      console.log("Cart Data extracted:", cartData);
+      console.log("Cart Items extracted:", cartItems);
     }
-  }, [cartData]);
+  }, [cartResponse, cartData, cartItems]);
 
   const handleCheckout = async () => {
     const accessToken = session?.accessToken as string;
@@ -38,8 +42,13 @@ const Addtocart = () => {
     };
 
     try {
-      await addToCartApi(accessToken, payload);
-      alert("Order placed successfully!");
+      const response = await addToCartApi(accessToken, payload);
+
+      if (response?.statusCode === 201) {
+        router.push("/payment-success");
+      } else {
+        alert("Order placed successfully!");
+      }
     } catch {
       alert("Failed to process checkout.");
     }
@@ -98,9 +107,9 @@ const Addtocart = () => {
           <button
             onClick={handleCheckout}
             disabled={cartItems.length === 0}
-            className="w-full bg-black text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-gray-900 transition-all transform active:scale-[0.98] disabled:bg-gray-300 disabled:cursor-not-allowed"
+            className="w-full bg-black cursor-pointer text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-gray-900 transition-all transform active:scale-[0.98] disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
-            Pay Now ${cartData?.totalPrice.toFixed(2) || "0.00"}
+            Pay Now ${(cartData?.totalPrice || 0).toFixed(2)}
           </button>
         </div>
 
@@ -115,8 +124,12 @@ const Addtocart = () => {
                   <div key={idx} className="flex gap-4 items-center group">
                     <div className="relative w-20 h-20 bg-gray-50 rounded-2xl border border-gray-100 p-2 flex-shrink-0 group-hover:border-black transition-colors">
                       <Image
-                        src={item.productId.image || "/images/placeholder.png"}
-                        alt={item.productId.title}
+                        src={
+                          (typeof item.productId.image === 'string'
+                            ? item.productId.image
+                            : item.productId.image?.url) || "/images/placeholder.png"
+                        }
+                        alt={item.productId.title || "Product Image"}
                         fill
                         className="object-contain"
                       />
@@ -129,7 +142,7 @@ const Addtocart = () => {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-gray-900">${(item.productId.price * item.quantity).toFixed(2)}</p>
+                      <p className="font-bold text-gray-900">${((item.productId.price || 0) * item.quantity).toFixed(2)}</p>
                     </div>
                   </div>
                 ))
@@ -156,7 +169,7 @@ const Addtocart = () => {
                 <span>Total</span>
                 <div className="text-right">
                   <span className="text-xs text-gray-400 block font-normal mb-1">USD</span>
-                  <span>${cartData?.totalPrice.toFixed(2) || "0.00"}</span>
+                  <span>${(cartData?.totalPrice || 0).toFixed(2)}</span>
                 </div>
               </div>
             </div>
