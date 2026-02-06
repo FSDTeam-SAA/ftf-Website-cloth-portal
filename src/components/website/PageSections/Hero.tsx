@@ -29,7 +29,7 @@ const Hero = () => {
                         </p>
                         <Link
                             href="/uniforms"
-                            className="bg-black text-white px-10 py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors"
+                            className="bg-[#00A950] text-white px-10 py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors"
                         >
                             Go to Uniforms
                         </Link>
@@ -51,10 +51,10 @@ const Hero = () => {
                             Browse and order company swag, merchandise, and branded items.
                         </p>
                         <a
-                            href="https://3y1stc-jq.myshopify.com/"
+                            href="https://pjswag.com/pages/swag-store"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="bg-black text-white px-10 py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors"
+                            className="bg-[#00A950] text-white px-10 py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors"
                         >
                             Buy Swag
                         </a>

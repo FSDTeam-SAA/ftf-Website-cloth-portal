@@ -99,10 +99,10 @@ const RoleProductList: React.FC<RoleProductListProps> = ({ role }) => {
                                     }
                                     alt={product.title}
                                     fill
-                                    className="object-contain p-4"
+                                    className="object-cover "
                                 />
                             </div>
-                            <div className="p-4">
+                            <div className="px-4 py-2">
                                 <h3 className="font-bold text-lg mb-2 line-clamp-1">{product.title}</h3>
                                 <div className="flex justify-between items-center mt-auto">
                                     <span className="text-gray-900 font-bold text-xl">${product.price}</span>
