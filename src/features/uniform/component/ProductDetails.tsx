@@ -7,6 +7,7 @@ import { useGetProductById } from "../hooks/useGetProductById";
 import { useSession } from "next-auth/react";
 import { useAddToCart } from "../../addtocart/hooks/useAddtoCart";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface ProductDetailsProps {
     productId: string;
@@ -27,9 +28,12 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
     } = useGetProductById(productId);
 
     // Initial dummy data for sizes if not present in API
-    const sizes = ["S", "M", "L", "XL", "XXL", "XXXL"];
-    const [selectedSize, setSelectedSize] = useState<string>("XL");
-    const [quantity, setQuantity] = useState(2);
+    const sizes = productByIdData?.data?.size
+        ? productByIdData.data.size.split(',').map(s => s.trim())
+        : ["S", "M", "L", "XL", "XXL", "XXXL"];
+
+    const [selectedSize, setSelectedSize] = useState<string | null>(null);
+    const [quantity, setQuantity] = useState(1);
 
     if (isLoadingProductById) {
         return (
@@ -50,8 +54,13 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
     const product = productByIdData.data;
 
     const handleAddToCart = () => {
+        if (!selectedSize) {
+            toast("Please select a size");
+            return;
+        }
+
         const payload = {
-            userId: session?.user?.id || "697d0ed37651a469d4646f21",
+            userId: session?.user?.id || "",
             products: [
                 {
                     productId: product._id,
@@ -69,6 +78,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
                 router.push("/checkout");
             }
         });
+    };
+
+    const handleClear = () => {
+        setSelectedSize(null);
+        setQuantity(1);
     };
 
     return (
@@ -110,7 +124,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
                                         key={size}
                                         onClick={() => setSelectedSize(size)}
                                         className={cn(
-                                            "w-12 h-12 rounded border flex items-center justify-center font-medium transition-colors",
+                                            "w-12 h-12 cursor-pointer rounded border flex items-center justify-center font-medium transition-colors",
                                             selectedSize === size
                                                 ? "bg-black text-white border-black"
                                                 : "bg-white text-gray-900 border-gray-200 hover:border-black"
@@ -123,11 +137,18 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
                         </div>
 
                         <div className="flex items-center gap-4 text-sm text-gray-500 mb-6">
-                            <button className="flex items-center gap-1 hover:text-black">
+                            <button
+                                onClick={handleClear}
+                                className="flex items-center gap-1 hover:text-black transition-colors"
+                            >
                                 Clear <span>×</span>
                             </button>
                             <span>|</span>
-                            <span>In Stock</span>
+                            <span className={cn(
+                                product.availableQuantity > 0 ? "text-green-600" : "text-red-600 font-medium"
+                            )}>
+                                {product.availableQuantity > 0 ? "In Stock" : "Out of Stock"}
+                            </span>
                         </div>
 
                         {/* Quantity & Add to Cart */}
@@ -151,10 +172,15 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
                             <button
                                 onClick={handleAddToCart}
                                 disabled={isAddingToCart}
-                                className="bg-black text-white font-bold py-3 px-12 rounded hover:bg-gray-800 transition-colors disabled:bg-gray-400"
+                                className="bg-black cursor-pointer text-white font-bold py-3 px-12 rounded hover:bg-gray-800 transition-colors disabled:bg-gray-400"
                             >
                                 {isAddingToCart ? "Adding..." : "Add to Cart"}
                             </button>
+
+                            <div className="flex flex-col justify-center">
+                                <span className="text-gray-400 text-xs uppercase tracking-wider">Total Price</span>
+                                <span className="text-2xl font-bold text-gray-900">${(product.price * quantity).toFixed(2)}</span>
+                            </div>
                         </div>
                     </div>
                 </div>

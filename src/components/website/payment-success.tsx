@@ -84,30 +84,17 @@ export default function PaymentSuccessPage() {
             your book ready.
           </p>
 
-          <div className="bg-gray-50 rounded-2xl p-6 mb-10 border border-gray-100">
-            <div className="flex items-center justify-center gap-3 text-gray-600 mb-2">
-              <Loader2 className="w-5 h-5 animate-spin text-green-500" />
-              <span className="font-medium">Redirecting to images step...</span>
-            </div>
-            <p className="text-sm text-gray-400">
-              Taking you back in{" "}
-              <span className="text-green-600 font-bold font-mono">
-                {countdown}s
-              </span>
-            </p>
-          </div>
+
 
           <button
             onClick={() => router.push("/create-book")}
-            className="group w-full bg-[#ff8b36] hover:bg-orange-600 text-white font-semibold py-4 px-8 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-lg shadow-orange-500/20"
+            className="group w-full bg-[#00A950] hover:bg-[#00A950]/80 text-white font-semibold py-4 px-8 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-lg shadow-orange-500/20"
           >
             <span>Continue Now</span>
             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
           </button>
 
-          <p className="mt-6 text-xs text-gray-400 uppercase tracking-widest font-bold">
-            Hinkle Creek Studio
-          </p>
+
         </div>
       </div>
     </div>
