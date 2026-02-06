@@ -4,12 +4,22 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useGetProductById } from "../hooks/useGetProductById";
+import { useSession } from "next-auth/react";
+import { useAddToCart } from "../../addtocart/hooks/useAddtoCart";
+import { useRouter } from "next/navigation";
 
 interface ProductDetailsProps {
     productId: string;
 }
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
+    const { data: session } = useSession();
+    const router = useRouter();
+    const {
+        mutate: addToCart,
+        isPending: isAddingToCart
+    } = useAddToCart();
+
     const {
         data: productByIdData,
         isLoading: isLoadingProductById,
@@ -38,6 +48,28 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
     }
 
     const product = productByIdData.data;
+
+    const handleAddToCart = () => {
+        const payload = {
+            userId: session?.user?.id || "697d0ed37651a469d4646f21",
+            products: [
+                {
+                    productId: product._id,
+                    quantity: quantity,
+                    size: selectedSize
+                }
+            ],
+            totalPrice: product.price * quantity
+        };
+
+        console.log("Adding to cart payload:", JSON.stringify(payload, null, 2));
+
+        addToCart(payload, {
+            onSuccess: () => {
+                router.push("/checkout");
+            }
+        });
+    };
 
     return (
         <div className="bg-white min-h-screen py-12 px-6 lg:px-12">
@@ -105,19 +137,23 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
                                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                                     className="px-2 text-xl font-medium"
                                 >
-                                    +
+                                    -
                                 </button>
                                 <span className="mx-4 font-bold min-w-[20px] text-center">{quantity}</span>
                                 <button
                                     onClick={() => setQuantity(quantity + 1)}
                                     className="px-2 text-xl font-medium"
                                 >
-                                    -
+                                    +
                                 </button>
                             </div>
 
-                            <button className="bg-black text-white font-bold py-3 px-12 rounded hover:bg-gray-800 transition-colors">
-                                Add to Cart
+                            <button
+                                onClick={handleAddToCart}
+                                disabled={isAddingToCart}
+                                className="bg-black text-white font-bold py-3 px-12 rounded hover:bg-gray-800 transition-colors disabled:bg-gray-400"
+                            >
+                                {isAddingToCart ? "Adding..." : "Add to Cart"}
                             </button>
                         </div>
                     </div>
