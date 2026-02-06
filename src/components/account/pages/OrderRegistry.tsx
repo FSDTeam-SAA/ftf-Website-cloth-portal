@@ -3,10 +3,9 @@
 
 import React from "react";
 import ProfileCard from "./ProfileCard";
-import { Loader2, Download, FileText, FileSpreadsheet } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useOrderList } from "@/features/account/hooks/useOrderlist";
-import { useSession } from "next-auth/react";
+import { useGetMyOrder } from "@/features/order/hooks/useGetMyOrder";
 import {
   Table,
   TableBody,
@@ -31,7 +30,13 @@ interface Product {
 
 interface Order {
   _id: string;
-  user: string;
+  user: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    region: string;
+  };
   totalAmount: number;
   remainingBalance: number;
   region: string;
@@ -42,21 +47,27 @@ interface Order {
 }
 
 const OrderRegistry = () => {
-  const { data: session } = useSession();
   const {
     data: ordersData,
     isLoading,
     error,
-  } = useOrderList(session?.user?.id as string);
+  } = useGetMyOrder();
 
-  // API returns { data: Order[] } or similar wrapper?
-  // Based on sample: "data": [ { ... } ]
+  // API typical returns { success: true, data: [...] }
   const orders: Order[] = ordersData?.data || [];
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="w-10 h-10 animate-spin text-gray-400" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-500">
+        Error loading orders. Please try again later.
       </div>
     );
   }
@@ -74,28 +85,28 @@ const OrderRegistry = () => {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
             <div>
               <h1 className="text-3xl font-black text-gray-900 tracking-tight mb-2">
-                Payment History
+                Order Registry
               </h1>
-              <p className="text-gray-500">See your payment details</p>
+              <p className="text-gray-500">See your order details and payment history</p>
             </div>
 
             {/* Export Actions */}
-            <div className="flex gap-2">
+            <div className="flex gap-2 text-sm">
               <Button
                 variant="outline"
                 className="h-10 rounded-lg font-bold border-gray-200 text-gray-600 gap-2"
               >
-                Export <div className="sr-only">Data</div>
+                Export
               </Button>
               <Button
                 variant="outline"
-                className="h-10 rounded-lg font-bold border-gray-200 text-gray-600 gap-2"
+                className="h-10 rounded-lg font-bold border-gray-200 text-gray-600"
               >
                 CSV
               </Button>
               <Button
                 variant="outline"
-                className="h-10 rounded-lg font-bold border-gray-200 text-gray-600 gap-2"
+                className="h-10 rounded-lg font-bold border-gray-200 text-gray-600"
               >
                 Pdf
               </Button>
@@ -130,10 +141,9 @@ const OrderRegistry = () => {
               <TableBody>
                 {orders.length > 0 ? (
                   orders.map((order) => {
-                    // Assuming first product logic for display or listing all
                     const mainProduct = order.products?.[0];
                     const productTitle =
-                      mainProduct?.productId?.title || "Product Bundle";
+                      mainProduct?.productId?.title || "Uniform Bundle";
                     const qty =
                       order.products?.reduce((acc, p) => acc + p.quantity, 0) ||
                       0;
@@ -144,18 +154,17 @@ const OrderRegistry = () => {
                         className="hover:bg-gray-50/50 border-gray-100 group transition-colors"
                       >
                         <TableCell className="py-6 font-medium text-gray-500 text-xs">
-                          {/* Address Logic - using region or dummy as full address isn't in Order object provided */}
-                          {/* The sample API response has 'region': 'Dhaka Division'. 
-                                               If full address is needed, we might need to look at user profile or if order has 'shippingAddress' which isn't in the sample.
-                                               Using Region for now as per sample data.
-                                           */}
                           <div className="max-w-[180px] break-words line-clamp-2">
-                            {order.region ||
-                              "21 Industrial Blvd, New Castle, DE 19720"}
+                            {order.region || "Order Location"}
                           </div>
                         </TableCell>
                         <TableCell className="py-6 font-bold text-gray-900">
                           {productTitle}
+                          {order.products.length > 1 && (
+                            <span className="text-xs font-normal text-gray-400 ml-2">
+                              +{order.products.length - 1} more
+                            </span>
+                          )}
                         </TableCell>
                         <TableCell className="py-6 font-medium text-gray-500">
                           {qty}
@@ -164,17 +173,19 @@ const OrderRegistry = () => {
                           <Badge
                             variant="secondary"
                             className={`
-                                                rounded-md px-3 py-1 font-bold capitalize shadow-none
-                                                ${order.status === "paid" ? "bg-green-100 text-green-700 hover:bg-green-100" : ""}
-                                                ${order.status === "pending" ? "bg-[#ffedc2] text-[#ff7a00] hover:bg-[#ffedc2]" : ""}
-                                                ${order.status !== "paid" && order.status !== "pending" ? "bg-gray-100 text-gray-600" : ""}
-                                             `}
+                                    rounded-md px-3 py-1 font-bold capitalize shadow-none border-0
+                                    ${order.status === "paid" || order.status === "completed"
+                                ? "bg-green-100 text-green-700"
+                                : order.status === "pending" || order.status === "unpaid"
+                                  ? "bg-yellow-100 text-yellow-700"
+                                  : "bg-gray-100 text-gray-600"}
+                                `}
                           >
                             {order.status}
                           </Badge>
                         </TableCell>
                         <TableCell className="py-6 font-bold text-gray-900">
-                          ${order.totalAmount}
+                          ${order.totalAmount || 0}
                         </TableCell>
                         <TableCell className="py-6 font-medium text-gray-500 text-right pr-6">
                           {new Date(order.createdAt).toLocaleDateString()}
@@ -188,7 +199,7 @@ const OrderRegistry = () => {
                       colSpan={6}
                       className="h-40 text-center text-gray-500"
                     >
-                      No payment history found.
+                      No order record found.
                     </TableCell>
                   </TableRow>
                 )}

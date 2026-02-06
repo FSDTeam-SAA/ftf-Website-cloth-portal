@@ -1,22 +1,27 @@
-// auth types 
 export interface User {
-    _id: string;
-    name?: string;
+    id: string;
     email: string;
     role: string;
-    profileImage: string;
-    refreshToken: string;
-    updatedAt: string;
+    firstName: string;
+    lastName: string;
+    avatar: string;
+    phoneNumber?: string;
+    homeAddress?: string;
+    city?: string;
+    region?: string;
+    location?: string;
 }
 
 export interface LoginData {
     user: User;
     accessToken: string;
+    refreshToken: string;
 }
 
 export interface LoginResponse {
-    status: boolean;
+    success: boolean;
     message: string;
+    statusCode: number;
     data: LoginData;
 }
 
