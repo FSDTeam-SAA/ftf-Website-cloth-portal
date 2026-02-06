@@ -59,7 +59,7 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
       ...token,
       accessToken: data.data.accessToken,
       accessTokenExpires: Date.now() + 60 * 60 * 1000, // Assume 1 hour for now
-      refreshToken: data.data.user.refreshToken || token.refreshToken, // Fallback to old if new not provided
+      refreshToken: data.data.refreshToken || token.refreshToken, // Fallback to old if new not provided
     };
   } catch (error) {
     console.error("RefreshAccessTokenError", error);
@@ -94,6 +94,7 @@ const handler = NextAuth({
 
           const user = data.data?.user;
           const accessToken = data.data?.accessToken;
+          const refreshToken = data.data?.refreshToken;
 
           console.log("User details:", user);
           console.log("Token:", accessToken);
@@ -104,13 +105,13 @@ const handler = NextAuth({
 
           // Return the object that NextAuth will use as 'user' in the jwt callback
           return {
-            id: user._id, // Ensure we get the ID
-            name: user.name || "",
-            email: user.email,
-            image: user.profileImage, // Map profileImage to image
-            role: user.role,
+            id: user?.id,
+            name: `${user?.firstName} ${user?.lastName}`.trim(),
+            email: user?.email,
+            image: user?.avatar, // Map avatar to image
+            role: user?.role,
             token: accessToken, // We attach the token here as a property of the user
-            refreshToken: user.refreshToken,
+            refreshToken: refreshToken as string,
           };
         } catch (error: unknown) {
           console.error("Authorize error:", error);
@@ -159,11 +160,11 @@ const handler = NextAuth({
         console.log("Session callback - Token:", token);
         session.user = {
           ...session.user,
-          id: token.id,
-          name: token.name,
-          email: token.email,
-          image: token.image,
-          role: token.role,
+          id: token?.id,
+          name: token?.name,
+          email: token?.email,
+          image: token?.image,
+          role: token?.role,
         };
         session.accessToken = token.accessToken;
         session.refreshToken = token.refreshToken;
