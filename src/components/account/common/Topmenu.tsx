@@ -75,13 +75,17 @@ export default function Navbar() {
           {status === "authenticated" ? (
             <div className="flex items-center space-x-5">
               {/* Shopping Bag Icon */}
-              <Link href="/cart" className="text-black hover:text-green-600 transition-colors">
+              <Link
+                href="/cart"
+                className="text-black hover:text-green-600 transition-colors"
+              >
                 <ShoppingBag size={24} strokeWidth={2.5} />
               </Link>
 
               {/* Points/Currency Icon - Matches the green '$' in screenshot */}
               <div className="flex items-center text-green-600 font-bold">
                 <Link href="/profile/balance">
+
                   <DollarSign size={24} strokeWidth={3} />
                 </Link>
               </div>
@@ -102,9 +106,32 @@ export default function Navbar() {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 mt-2">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuLabel className="cursor-pointer">
+                    <Link href="/profile">My Account</Link>
+                  </DropdownMenuLabel>
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile" className="cursor-pointer">
+                      Personal Information
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile/orders" className="cursor-pointer">
+                      Orders
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/profile/change-password"
+                      className="cursor-pointer"
+                    >
+                      Change Password
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => signOut()}>
+                  <DropdownMenuItem
+                    onClick={() => signOut()}
+                    className="cursor-pointer"
+                  >
                     <LogOut className="mr-2 h-4 w-4" /> Log Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -114,7 +141,9 @@ export default function Navbar() {
             /* Logged Out View */
             <div className="hidden md:flex items-center space-x-3">
               <Link href="/login">
-                <Button variant="ghost" className="font-semibold">Log In</Button>
+                <Button variant="ghost" className="font-semibold">
+                  Log In
+                </Button>
               </Link>
             </div>
           )}
@@ -123,12 +152,17 @@ export default function Navbar() {
           <div className="md:hidden">
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon"><Menu /></Button>
+                <Button variant="ghost" size="icon">
+                  <Menu />
+                </Button>
               </SheetTrigger>
               <SheetContent>
                 <div className="flex flex-col space-y-4 mt-10">
                   {menuItems.map((item) => {
-                    const href = item.label === "Catalog" && status !== "authenticated" ? "/login" : item.href;
+                    const href =
+                      item.label === "Catalog" && status !== "authenticated"
+                        ? "/login"
+                        : item.href;
                     return (
                       <Link
                         key={item.href}
