@@ -1,19 +1,4 @@
-// import ProfileSidebar from "@/components/account/common/ProfileSidebar";
-// import Navbar from "@/components/account/common/Topmenu";
-
-// // app/profile/layout.tsx
-// export default function ProfileLayout({ children }: { children: React.ReactNode }) {
-//   return (
-//     <div className=" min-h-full gap-8 py-10">
-      
-      
-//         <Navbar />
-//       <main className="flex-1 container mx-auto  flex rounded-xl mx-auto border border-gray-100 bg-white p-8 shadow-sm">
-//         {children}
-//       </main>
-//     </div>
-//   );
-// }
+// app/profile/layout.tsx
 
 import ProfileSidebar from "@/components/account/common/ProfileSidebar";
 import Navbar from "@/components/account/common/Topmenu";
