@@ -34,9 +34,9 @@ const Addtocart = () => {
     const payload = {
       userId: userId,
       products: cartItems.map(item => ({
-        productId: item.productId._id,
-        quantity: item.quantity,
-        size: item.size
+        productId: item?.productId?._id,
+        quantity: item?.quantity,
+        size: item?.size
       })),
       totalPrice: cartData?.totalPrice || 0
     };
@@ -83,9 +83,14 @@ const Addtocart = () => {
               <label className="block">
                 <span className="text-sm font-medium text-gray-700 mb-1 block">Country / Region</span>
                 <select className="w-full border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-black outline-none transition-all">
-                  <option>United States</option>
-                  <option>United Kingdom</option>
-                  <option>Canada</option>
+                  <option>21 Industrial Blvd. New Castle, DE 19720</option>
+                  <option>6380 Flank Dr. #600 Harrisburg, PA 17112 </option>
+                  <option>141 Delta Dr. Suite D Pittsburgh, PA 15238</option>
+                  <option>1000 Prime Place. Hauppauge, NY 11788</option>
+                  <option>2 Cranberry Rd. #A5 Parsippany, NJ 07054</option>
+                  <option>5061 Howerton Way. Suite L Bowie, MD 20715</option>
+                  <option>10189 Maple Leaf Ct. Ashland, VA 23005</option>
+                  <option>2551 Eltham Ave. Suite L Norfolk, VA 23513</option>
                 </select>
               </label>
             </div>
@@ -125,24 +130,24 @@ const Addtocart = () => {
                     <div className="relative w-20 h-20 bg-gray-50 rounded-2xl border border-gray-100 p-2 flex-shrink-0 group-hover:border-black transition-colors">
                       <Image
                         src={
-                          (typeof item.productId.image === 'string'
-                            ? item.productId.image
-                            : item.productId.image?.url) || "/images/placeholder.png"
+                          (typeof item?.productId?.image === 'string'
+                            ? item?.productId?.image
+                            : item?.productId?.image?.url) || "/images/placeholder.png"
                         }
-                        alt={item.productId.title || "Product Image"}
+                        alt={item?.productId?.title || "Product Image"}
                         fill
                         className="object-contain"
                       />
                     </div>
                     <div className="flex-1">
-                      <p className="font-bold text-gray-900 leading-tight mb-1">{item.productId.title}</p>
+                      <p className="font-bold text-gray-900 leading-tight mb-1">{item?.productId?.title}</p>
                       <p className="text-sm text-gray-500">
-                        Size: <span className="font-medium text-gray-700">{item.size}</span> |
-                        Qty: <span className="font-medium text-gray-700">{item.quantity}</span>
+                        Size: <span className="font-medium text-gray-700">{item?.size}</span> |
+                        Qty: <span className="font-medium text-gray-700">{item?.quantity}</span>
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-gray-900">${((item.productId.price || 0) * item.quantity).toFixed(2)}</p>
+                      <p className="font-bold text-gray-900">${((item?.productId?.price || 0) * item.quantity).toFixed(2)}</p>
                     </div>
                   </div>
                 ))
