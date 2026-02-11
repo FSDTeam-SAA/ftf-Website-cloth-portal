@@ -2,9 +2,9 @@
 import { api } from "@/lib/api";
 
 
-export const getPaymentHistory = async (accessToken: string, userId: string) => {
+export const getPaymentHistory = async (accessToken: string) => {
     try {
-        const response = await api.get(`/order/${userId}/my-history`, {
+        const response = await api.get(`/order/user/my-history`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
