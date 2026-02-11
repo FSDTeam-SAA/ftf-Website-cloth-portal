@@ -155,6 +155,14 @@ export default function Navbar() {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link
+                      href="/profile/payment-history"
+                      className="cursor-pointer"
+                    >
+                      Payment
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
                       href="/profile/change-password"
                       className="cursor-pointer"
                     >
