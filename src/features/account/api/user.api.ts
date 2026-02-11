@@ -30,3 +30,31 @@ export const updateProfile = async (data: FormData, accessToken: string) => {
     }
 };
 
+// POST /user/verify-email
+export const verifyEmail = async (data: { otp: string }, accessToken: string) => {
+    try {
+        const response = await api.post("/user/verify-email", data, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+// POST /user/resend-otp
+export const resendOtp = async (accessToken: string) => {
+    try {
+        const response = await api.post("/user/resend-otp", {}, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+

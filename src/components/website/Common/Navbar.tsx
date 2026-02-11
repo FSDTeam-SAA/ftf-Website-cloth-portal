@@ -1,24 +1,21 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import {
   Menu,
-  X,
-  ChevronDown,
   User,
   LogOut,
-  Package,
-  Key,
   ShoppingBag,
   DollarSign,
+  Search,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useSession, signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useGetMyProfile } from "@/features/account/hooks/useGetMyProfile";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,35 +28,45 @@ import {
 const menuItems = [
   { href: "/", label: "Home" },
   { href: "/uniforms", label: "Catalog" },
+  
 ];
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const { data: session, status } = useSession();
+  const { data: userProfile } = useGetMyProfile();
   const pathname = usePathname();
-  const [showDropdown, setShowDropdown] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const isActive = (href: string) =>
     href === "/" ? pathname === href : pathname.startsWith(href);
 
+  const getUserInitials = (name: string | null | undefined) => {
+    if (!name) return "";
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 0) return "";
+    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+    return (
+      parts[0].charAt(0) + parts[parts.length - 1].charAt(0)
+    ).toUpperCase();
+  };
+
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
-      <div className="container mx-auto px-4 lg:px-12 flex justify-between items-center h-20">
+    <nav className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm font-sans">
+      <div className="container mx-auto px-4 lg:px-12 flex justify-between items-center h-40">
         {/* 1. Logo Section */}
-        <Link href="/" className="flex items-center">
+        <Link href="/" className="flex flex-col items-center justify-center">
           <Image
-            src="/images/logo1.png"
+            src="/images/logo.jpeg"
             alt="PJF Logo"
-            width={80}
-            height={40}
+            width={150}
+            height={80}
             className="object-contain"
             priority
           />
         </Link>
 
-        {/* 2. Desktop Navigation Links */}
-        <ul className="hidden md:flex space-x-10 font-medium text-gray-700">
+        {/* 2. Desktop Navigation Links (Centered) */}
+        {/* <ul className="hidden md:flex items-center space-x-12 font-medium text-gray-600">
           {menuItems.map((item) => {
             const href =
               item.label === "Catalog" && status !== "authenticated"
@@ -70,7 +77,7 @@ export default function Navbar() {
                 <Link
                   href={href}
                   className={cn(
-                    "transition-colors hover:text-green-600",
+                    "transition-colors hover:text-black text-sm uppercase tracking-wider",
                     isActive(item.href) ? "text-black font-bold" : "",
                   )}
                 >
@@ -79,50 +86,38 @@ export default function Navbar() {
               </li>
             );
           })}
-        </ul>
+        </ul> */}
 
-        {/* 3. Action Area (Logged In vs Logged Out) */}
+        {/* 3. Action Area */}
         <div className="flex items-center space-x-6">
+          {/* Visual Search Icon (New) */}
+          <button className="text-gray-600 hover:text-black transition-colors">
+            <Search size={22} strokeWidth={1.5} />
+          </button>
+
           {status === "authenticated" ? (
             <div className="flex items-center space-x-5">
-              {/* Shopping Bag Icon */}
-              <Link
-                href="/cart"
-                className="text-black hover:text-green-600 transition-colors"
-              >
-                <ShoppingBag size={24} strokeWidth={2.5} />
-              </Link>
-
-              {/* Points/Currency Icon - Matches the green '$' in screenshot */}
-              <div className="flex items-center text-green-600 font-bold">
-                <Link href="/profile/balance">
-
-                  <DollarSign size={24} strokeWidth={3} />
-                </Link>
-              </div>
-
               {/* User Profile Info */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center space-x-3 outline-none group">
-                    <span className="hidden lg:block font-bold text-gray-900 group-hover:text-green-600">
-                      {session?.user?.name || "Edward Steven"}
-                    </span>
-                    <Avatar className="h-10 w-10 border-2 border-gray-100">
-                      <AvatarImage src={session?.user?.image || ""} />
-                      <AvatarFallback className="bg-green-100 text-green-700">
-                        {session?.user?.name?.charAt(0) || <User size={20} />}
-                      </AvatarFallback>
-                    </Avatar>
+                  <button className="flex items-center justify-center outline-none group text-gray-600 hover:text-black transition-colors font-bold border rounded-full p-2 w-10 h-10 cursor-pointer">
+                    {session?.user?.name ? (
+                      <span className="text-sm">
+                        {getUserInitials(session.user.name)}
+                      </span>
+                    ) : (
+                      <User size={22} strokeWidth={1.5} />
+                    )}
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 mt-2">
                   <DropdownMenuLabel className="cursor-pointer">
-                    <Link href="/profile">My Account</Link>
+                    <span className="font-bold">{session?.user?.name}</span>
                   </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <Link href="/profile" className="cursor-pointer">
-                      Personal Information
+                      My Account
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
@@ -131,11 +126,16 @@ export default function Navbar() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+                    <Link href="/profile/payment-history" className="cursor-pointer">
+                    Payment
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link
                       href="/profile/change-password"
                       className="cursor-pointer"
                     >
-                      Change Password
+                      Authorize Update
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -147,6 +147,28 @@ export default function Navbar() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              {/* Shopping Bag Icon */}
+              <Link
+                href="/checkout"
+                className="text-gray-600 hover:text-black transition-colors cursor-pointer"
+              >
+                <ShoppingBag size={22} strokeWidth={1.5} />
+              </Link>
+
+              {/* Points/Currency Icon - Kept for logic, visible but matched style */}
+              <div
+                className="flex items-center text-green-600 font-bold space-x-1"
+                title="Balance"
+              >
+                <Link
+                  href="/profile/balance"
+                  className="flex items-center cursor-pointer"
+                >
+                  <DollarSign size={22} strokeWidth={2} />
+                  <span>{userProfile?.data?.balance ?? 0}</span>
+                </Link>
+              </div>
             </div>
           ) : (
             /* Logged Out View */
@@ -168,7 +190,7 @@ export default function Navbar() {
                 </Button>
               </SheetTrigger>
               <SheetContent>
-                <div className="flex flex-col space-y-4 mt-10">
+                <div className="flex flex-col px-4 space-y-4 mt-10">
                   {menuItems.map((item) => {
                     const href =
                       item.label === "Catalog" && status !== "authenticated"

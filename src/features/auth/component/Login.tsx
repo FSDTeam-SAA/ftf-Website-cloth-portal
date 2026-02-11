@@ -21,11 +21,13 @@ const Login = () => {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log(email, password, rememberMe);
     const res = await handleLogin(email, password, rememberMe);
     if (res && !res.error) {
-      // Redirect to callback URL (e.g., /create-book) or home
+      
       router.push(callbackUrl);
     }
+    console.log(res);
   };
 
   return (

@@ -21,6 +21,22 @@ export const addToCartApi = async (accessToken: string, cartData: AddToCartReque
     }
 };
 
+export const updateCartApi = async (accessToken: string, cartData: AddToCartRequest, userId: string): Promise<ApiResponse<CartData>> => {
+    try {
+        const response = await api.put(`/cart/${userId}`, cartData, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+
+        console.log('Cart updated:', response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating cart:', error);
+        throw error;
+    }
+};
+
 export const getCartApi = async (accessToken: string, userId: string): Promise<CartResponse> => {
     try {
         const response = await api.get(`/cart/${userId}`, {

@@ -22,6 +22,8 @@ export function useLogin() {
                 return result;
             }
 
+            console.log(result);
+
             return result;
         } catch (err: unknown) {
             setError((err as Error)?.message || "Something went wrong");

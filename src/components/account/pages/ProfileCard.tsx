@@ -61,7 +61,7 @@ export function ProfileCard() {
         { label: "Name:", value: `${profile.firstName} ${profile.lastName}` },
         { label: "Email:", value: profile.email },
         { label: "Phone:", value: profile.phoneNumber || "+1 (555) 123-4567" }, // Fallback for UI matching
-        { label: "Region:", value: profile.region || "Kentucky 39495" },
+        { label: "Region Office:", value: profile.region || "Kentucky 39495" },
         { label: "Home Address:", value: profile.homeAddress || "4517 Washington Ave. Manchester" },
     ];
 
