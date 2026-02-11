@@ -9,12 +9,12 @@ export function useResetPassword() {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<boolean>(false);
 
-    const handleResetPassword = async (data: { email: string; newPassword: string }) => {
+    const handleResetPassword = async (data: { newPassword: string; confirmPassword: string }, accessToken: string) => {
         setLoading(true);
         setError(null);
         setSuccess(false);
         try {
-            const response = await resetPasswordApi(data);
+            const response = await resetPasswordApi(data, accessToken);
             setSuccess(true);
             return response;
         } catch (err: unknown) {

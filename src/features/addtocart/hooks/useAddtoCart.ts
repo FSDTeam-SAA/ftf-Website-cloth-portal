@@ -18,7 +18,7 @@ export const useAddToCart = () => {
         onSuccess: () => {
             console.log("Product added to cart successfully");
             // Invalidate the cart query so it refetches on the checkout page
-            queryClient.invalidateQueries({ queryKey: ["cart"] });
+            queryClient.invalidateQueries({ queryKey: ["cart"], refetchType: 'all' });
         },
         onError: (error) => {
             console.error("Error adding product to cart:", error);
