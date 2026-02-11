@@ -28,6 +28,7 @@ import {
 const menuItems = [
   { href: "/", label: "Home" },
   { href: "/uniforms", label: "Catalog" },
+  
 ];
 
 export default function Navbar() {
@@ -122,6 +123,11 @@ export default function Navbar() {
                   <DropdownMenuItem asChild>
                     <Link href="/profile/orders" className="cursor-pointer">
                       Orders
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile/payment-history" className="cursor-pointer">
+                    Payment
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
