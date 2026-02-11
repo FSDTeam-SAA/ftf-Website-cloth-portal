@@ -10,7 +10,8 @@ export const usePaymentHistory = () => {
 
     return useQuery({
         queryKey: ["paymentHistory", accessToken, userId],
-        queryFn: () => getPaymentHistory(accessToken, userId),
+        // queryFn: () => getPaymentHistory(accessToken, userId),
+        queryFn: () => getPaymentHistory(accessToken),
         enabled: !!accessToken && !!userId,
     });
 };
