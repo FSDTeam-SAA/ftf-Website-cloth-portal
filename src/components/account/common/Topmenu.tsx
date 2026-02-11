@@ -76,7 +76,7 @@ export default function Navbar() {
             <div className="flex items-center space-x-5">
               {/* Shopping Bag Icon */}
               <Link
-                href="/cart"
+                href="/checkout"
                 className="text-black hover:text-green-600 transition-colors"
               >
                 <ShoppingBag size={24} strokeWidth={2.5} />

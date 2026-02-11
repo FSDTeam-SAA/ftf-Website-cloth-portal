@@ -1,9 +1,13 @@
 // features/auth/api/resetpassword.api.ts
 import { api } from "@/lib/api";
 
-export const resetPassword = async (data: { email: string; newPassword: string }) => {
+export const resetPassword = async (data: { newPassword: string; confirmPassword: string }, accessToken: string) => {
     try {
-        const res = await api.post('/auth/reset-password', data);
+        const res = await api.post('/auth/reset-password', data, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
         return res.data;
     } catch (error) {
         throw error;

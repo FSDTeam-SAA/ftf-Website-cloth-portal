@@ -1,6 +1,7 @@
 export interface Product {
     _id: string;
-    image: string | { url: string; publicId: string };
+    image?: string | { url: string; publicId: string };
+    images?: { url: string; publicId: string; _id: string }[];
     title: string;
     type: string;
     description: string;
