@@ -89,28 +89,6 @@ const OrderRegistry = () => {
               </h1>
               <p className="text-gray-500">See your order details and payment history</p>
             </div>
-
-            {/* Export Actions */}
-            <div className="flex gap-2 text-sm">
-              <Button
-                variant="outline"
-                className="h-10 rounded-lg font-bold border-gray-200 text-gray-600 gap-2"
-              >
-                Export
-              </Button>
-              <Button
-                variant="outline"
-                className="h-10 rounded-lg font-bold border-gray-200 text-gray-600"
-              >
-                CSV
-              </Button>
-              <Button
-                variant="outline"
-                className="h-10 rounded-lg font-bold border-gray-200 text-gray-600"
-              >
-                Pdf
-              </Button>
-            </div>
           </div>
 
           {/* Table */}

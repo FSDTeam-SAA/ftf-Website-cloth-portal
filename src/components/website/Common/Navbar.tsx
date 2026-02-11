@@ -15,6 +15,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useSession, signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
+import { useGetMyProfile } from "@/features/account/hooks/useGetMyProfile";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,11 +28,13 @@ import {
 const menuItems = [
   { href: "/", label: "Home" },
   { href: "/uniforms", label: "Catalog" },
+  
 ];
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const { data: session, status } = useSession();
+  const { data: userProfile } = useGetMyProfile();
   const pathname = usePathname();
 
   const isActive = (href: string) =>
@@ -123,6 +126,11 @@ export default function Navbar() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+                    <Link href="/profile/payment-history" className="cursor-pointer">
+                    Payment
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link
                       href="/profile/change-password"
                       className="cursor-pointer"
@@ -150,11 +158,15 @@ export default function Navbar() {
 
               {/* Points/Currency Icon - Kept for logic, visible but matched style */}
               <div
-                className="flex items-center text-green-600 font-bold"
+                className="flex items-center text-green-600 font-bold space-x-1"
                 title="Balance"
               >
-                <Link href="/profile/balance" className="cursor-pointer">
+                <Link
+                  href="/profile/balance"
+                  className="flex items-center cursor-pointer"
+                >
                   <DollarSign size={22} strokeWidth={2} />
+                  <span>{userProfile?.data?.balance ?? 0}</span>
                 </Link>
               </div>
             </div>
@@ -178,7 +190,7 @@ export default function Navbar() {
                 </Button>
               </SheetTrigger>
               <SheetContent>
-                <div className="flex flex-col space-y-4 mt-10">
+                <div className="flex flex-col px-4 space-y-4 mt-10">
                   {menuItems.map((item) => {
                     const href =
                       item.label === "Catalog" && status !== "authenticated"

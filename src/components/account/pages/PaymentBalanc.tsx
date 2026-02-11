@@ -75,6 +75,7 @@ const PaymentBalance = () => {
                             <p className="text-6xl font-black text-slate-900 tracking-tighter">
                                 {formattedBalance}
                             </p>
+                            {/* <span>{userProfile?.data?.balance ?? 0}</span> */}
                             <p className="text-slate-400 font-medium mt-2 uppercase tracking-widest text-xs">
                                 Total USD Balance
                             </p>
