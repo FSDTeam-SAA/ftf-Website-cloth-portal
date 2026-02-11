@@ -240,12 +240,12 @@ const Addtocart = () => {
                   ${(cartData?.totalPrice || 0).toFixed(2)}
                 </span>
               </div>
-              <div className="flex justify-between text-gray-600">
+              {/* <div className="flex justify-between text-gray-600">
                 <span>Shipping</span>
                 <span className="text-green-600 font-medium whitespace-nowrap">
                   Calculated at checkout
                 </span>
-              </div>
+              </div> */}
               <div className="flex justify-between text-2xl font-bold text-gray-900 pt-6 border-t border-gray-100">
                 <span>Total</span>
                 <div className="text-right">
