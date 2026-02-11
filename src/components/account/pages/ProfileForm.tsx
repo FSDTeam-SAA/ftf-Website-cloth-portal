@@ -191,7 +191,7 @@ export const ProfileForm = ({ initialData }: ProfileFormProps) => {
 
         {/* Region - Dropdown Example as per screenshot */}
         <div className="space-y-3 md:col-span-2">
-          <Label className="font-bold text-gray-700">Region</Label>
+          <Label className="font-bold text-gray-700">Region Office</Label>
           <Select
             value={formData.region}
             onValueChange={(val) => setFormData({ ...formData, region: val })}
