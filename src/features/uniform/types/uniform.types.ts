@@ -1,7 +1,6 @@
 export interface Product {
     _id: string;
-    image?: string | { url: string; publicId: string };
-    images?: { url: string; publicId: string; _id: string }[];
+    images: { url: string; publicId: string; _id: string }[];
     title: string;
     type: string;
     description: string;
@@ -9,7 +8,9 @@ export interface Product {
     availableQuantity: number;
     price: number;
     role: string | null;
+    targetRoles: string[];
     status: "active" | "inactive";
+    rigion: string;
     createdAt: string;
     updatedAt: string;
 }
