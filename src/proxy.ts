@@ -11,8 +11,8 @@ export async function proxy(request: NextRequest) {
     // 1. Check and Normalize Role (Handles ADMIN, admin, USER, user, etc.)
     const userRole = (token?.role as string)?.toUpperCase(); 
     
-    const isAdmin = userRole === "ADMIN";
-    const isUser = userRole === "USER";
+    const isAdmin = userRole === "owner";
+    const isUser = userRole === "employe";
     const isGuest = !token;
 
     console.log("-----------------------------------------");
