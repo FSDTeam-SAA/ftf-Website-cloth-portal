@@ -93,9 +93,7 @@ const RoleProductList: React.FC<RoleProductListProps> = ({ role }) => {
                             <div className="relative aspect-square bg-gray-50/50">
                                 <Image
                                     src={
-                                        typeof product.image === 'string'
-                                            ? product.image
-                                            : product.image?.url || "/images/uniforms/placeholder.png"
+                                        product.images[0]?.url || "/images/uniforms/placeholder.png"
                                     }
                                     alt={product.title}
                                     fill

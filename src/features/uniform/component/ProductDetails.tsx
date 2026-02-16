@@ -91,12 +91,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
             <div className="relative w-full aspect-square">
               <Image
                 src={
-                  (product.images && product.images.length > 0
-                    ? product.images[0].url
-                    : typeof product.image === "string"
-                      ? product.image
-                      : product.image?.url) ||
-                  "/images/uniforms/placeholder.png"
+                  product.images[0]?.url || "/images/uniforms/placeholder.png"
                 }
                 alt={product.title}
                 fill
