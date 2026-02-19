@@ -34,6 +34,7 @@ const menuItems = [
   { href: "/uniforms", label: "Catalog" },
   { href: "/profile", label: "Account" },
   { href: "/orders", label: "Orders" },
+  { href: "/profile/change-password", label: "Authorize Update" },
 ];
 
 export default function Navbar() {

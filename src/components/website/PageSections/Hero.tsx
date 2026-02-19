@@ -10,7 +10,7 @@ const Hero = () => {
     <section className="bg-transparent py-20 px-4 min-h-[600px] flex flex-col items-center justify-center">
       <div className="max-w-6xl w-full">
         <h2 className="text-gray-800 text-center text-4xl mb-4 font-medium">
-          UNIFORM PORTAL
+          Welcome PJ Team Members
         </h2>
         <p className="text-gray-600 text-center text-lg mb-20 font-medium">
           What do you want to do today?
@@ -26,7 +26,7 @@ const Hero = () => {
               <Users className="w-16 h-16 text-green-600" strokeWidth={1.5} />
             </div>
             <h3 className="text-3xl font-bold text-black mb-4 font-sans">
-              Welcome PJ Team Members{" "}
+              Uniform Portal{" "}
             </h3>
             <p className="text-gray-600 mb-8 max-w-[300px] leading-relaxed">
               Access your uniform ordering system and manage your work attire.

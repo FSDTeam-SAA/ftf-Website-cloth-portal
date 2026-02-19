@@ -130,14 +130,14 @@ export default function Navbar() {
                     Payment
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
+                  {/* <DropdownMenuItem asChild>
                     <Link
                       href="/profile/change-password"
                       className="cursor-pointer"
                     >
                       Authorize Update
                     </Link>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={() => signOut()}
