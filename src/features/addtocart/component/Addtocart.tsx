@@ -6,22 +6,24 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useGetMyProfile } from "@/features/account/hooks/useGetMyProfile";
 
 const Addtocart = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const { data: cartResponse, isLoading: isCartLoading } = useGetCart();
+  const { data: userProfile } = useGetMyProfile();
 
   const cartData = cartResponse?.data;
   const cartItems = useMemo(() => cartData?.products || [], [cartData]);
 
-  useEffect(() => {
-    if (cartResponse) {
-      console.log("Full Cart API Response:", cartResponse);
-      console.log("Cart Data extracted:", cartData);
-      console.log("Cart Items extracted:", cartItems);
-    }
-  }, [cartResponse, cartData, cartItems]);
+  // useEffect(() => {
+  //   if (cartResponse) {
+  //     console.log("Full Cart API Response:", cartResponse);
+  //     console.log("Cart Data extracted:", cartData);
+  //     console.log("Cart Items extracted:", cartItems);
+  //   }
+  // }, [cartResponse, cartData, cartItems]);
 
   const [selectedRegion, setSelectedRegion] = useState("Dhaka Division");
 
@@ -44,6 +46,14 @@ const Addtocart = () => {
         size: item?.size,
       })),
     };
+
+    const balance = userProfile?.data?.balance || 0;
+    const totalPrice = cartData?.totalPrice || 0;
+
+    if (totalPrice > balance) {
+      toast.error("Insufficient balance. Please top up your account.");
+      return;
+    }
 
     try {
       const response = await orderCart(accessToken, payload);
@@ -82,6 +92,10 @@ const Addtocart = () => {
       </div>
     );
   }
+
+  const balance = userProfile?.data?.balance || 0;
+  const totalPrice = cartData?.totalPrice || 0;
+  const isInsufficientBalance = totalPrice > balance;
 
   return (
     <div className="container mx-auto p-8 max-w-7xl">
@@ -130,8 +144,7 @@ const Addtocart = () => {
                   <option value="10189 Maple Leaf Ct. Ashland, VA 23005">
                     10189 Maple Leaf Ct. Ashland, VA 23005
                   </option>
-                  <option
-                    value="2551 Eltham Ave. Suite L Norfolk, VA 23513">
+                  <option value="2551 Eltham Ave. Suite L Norfolk, VA 23513">
                     2551 Eltham Ave. Suite L Norfolk, VA 23513
                   </option>
                 </select>
@@ -158,13 +171,20 @@ const Addtocart = () => {
             </div>
           </section>
 
-          <button
-            onClick={handleCheckout}
-            disabled={cartItems.length === 0}
-            className="w-full bg-black cursor-pointer text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-gray-900 transition-all transform active:scale-[0.98] disabled:bg-gray-300 disabled:cursor-not-allowed"
-          >
-            Pay Now ${(cartData?.totalPrice || 0).toFixed(2)}
-          </button>
+          <div className="space-y-4">
+            <button
+              onClick={handleCheckout}
+              disabled={cartItems.length === 0 || isInsufficientBalance}
+              className="w-full bg-black cursor-pointer text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-gray-900 transition-all transform active:scale-[0.98] disabled:bg-gray-300 disabled:cursor-not-allowed"
+            >
+              Pay Now ${(cartData?.totalPrice || 0).toFixed(2)}
+            </button>
+            {isInsufficientBalance && (
+              <p className="text-red-500 text-center font-medium">
+                Insufficient balance. Please top up your account to proceed.
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Right Column: Order Summary */}
@@ -234,10 +254,16 @@ const Addtocart = () => {
             <hr className="my-8 border-gray-100" />
 
             <div className="space-y-4">
-              <div className="flex justify-between text-gray-600">
+              <div className="flex justify-between text-gray">
                 <span>Subtotal</span>
                 <span className="font-medium text-gray-900">
                   ${(cartData?.totalPrice || 0).toFixed(2)}
+                </span>
+              </div>
+              <div className="flex justify-between text-[#00A950]">
+                <span>Current Balance</span>
+                <span className="font-medium text-[#00A950]">
+                  ${(userProfile?.data?.balance || 0).toFixed(2)}
                 </span>
               </div>
               {/* <div className="flex justify-between text-gray-600">
