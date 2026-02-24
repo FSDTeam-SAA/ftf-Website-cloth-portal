@@ -34,7 +34,7 @@ const menuItems = [
   { href: "/uniforms", label: "Catalog" },
   { href: "/profile", label: "Account" },
   { href: "/orders", label: "Orders" },
-  { href: "/profile/change-password", label: "Authorize Update" },
+  { href: "/profile/change-password", label: "Change Password" },
 ];
 
 export default function Navbar() {
@@ -167,7 +167,7 @@ export default function Navbar() {
                       href="/profile/change-password"
                       className="cursor-pointer"
                     >
-                      Authorize Update
+                      Change Password
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
