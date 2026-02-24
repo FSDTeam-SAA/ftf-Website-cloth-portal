@@ -34,11 +34,11 @@ const PaymentBalance = () => {
             <div className="flex justify-between items-end">
                 <div>
                     <h1 className="text-4xl font-bold text-slate-900 tracking-tight">
-                        Financial Overview
-                    </h1>
-                    <p className="text-slate-500 mt-2 text-lg">
                         See your balance.
-                    </p>
+                    </h1>
+                    {/* <p className="text-slate-500 mt-2 text-lg">
+                        See your balance.
+                    </p> */}
                 </div>
                 <div className="hidden md:block">
                      <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium">
