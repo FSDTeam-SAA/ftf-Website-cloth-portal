@@ -33,7 +33,7 @@ const menuItems = [
   { href: "/", label: "Home" },
   { href: "/uniforms", label: "Catalog" },
   { href: "/profile", label: "Account" },
-  { href: "/orders", label: "Orders" },
+  { href: "/profile/orders", label: "Orders" },
   { href: "/profile/change-password", label: "Change Password" },
 ];
 
