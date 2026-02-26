@@ -182,7 +182,7 @@ const Uniforms = () => {
                         className="text-4xl font-bold text-gray-900"
                     >
                         {/* What is your Job/role? */}
-                        Find Uniforms By Your Role
+                        Find By Your Role
                     </motion.h1>
                 </div>
 
