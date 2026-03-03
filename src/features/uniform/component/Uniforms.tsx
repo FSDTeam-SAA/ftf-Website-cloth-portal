@@ -181,8 +181,8 @@ const Uniforms = () => {
                         animate={{ y: 0, opacity: 1 }}
                         className="text-4xl font-bold text-gray-900"
                     >
-                        {/* What is your Job/role? */}
-                        Find By Your Role
+                        What is your Job/Role?
+                        {/* Find By Your Role */}
                     </motion.h1>
                 </div>
 
