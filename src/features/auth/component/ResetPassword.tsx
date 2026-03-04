@@ -11,11 +11,6 @@ const ResetPassword = () => {
   const { forgotPassword, loading, error, success } = useForgotPassword();
   const router = useRouter();
 
-  useEffect(() => {
-    if (success) {
-      router.push(`/verify-otp?email=${encodeURIComponent(email)}`);
-    }
-  }, [success, router, email]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +18,7 @@ const ResetPassword = () => {
     const data = await forgotPassword(email);
     if (data?.accessToken) {
       router.push(
-        `/verify-otp?email=${encodeURIComponent(email)}&token=${encodeURIComponent(data.accessToken)}`,
+        `/verify-otp?token=${encodeURIComponent(data.accessToken)}`,
       );
     }
   };
