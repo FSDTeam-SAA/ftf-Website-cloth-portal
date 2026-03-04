@@ -3,14 +3,15 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
+
 
 import { useResetPassword } from "../hooks/useResetPassword";
 
 const NewPassword = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const email = searchParams.get("email"); // email from query params
-  const token = searchParams.get("token"); // token from query params
+  const token = searchParams.get("token");
 
   const { handleResetPassword, loading, error: apiError } = useResetPassword();
 
@@ -26,7 +27,7 @@ const NewPassword = () => {
     e.preventDefault();
     setLocalError(null);
 
-    if (!email || !token) {
+    if (!token) {
       setLocalError("Missing information. Please try the reset process again.");
       return;
     }
@@ -50,9 +51,10 @@ const NewPassword = () => {
     );
 
     if (res) {
-      alert("Password reset successfully");
+      toast.success("Password reset successfully");
       router.push("/login");
     }
+
   };
 
   return (

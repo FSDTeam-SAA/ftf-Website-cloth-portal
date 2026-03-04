@@ -9,12 +9,12 @@ export function useVerifyCode() {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
-    const verifyCode = async (code: string, email: string, accessToken: string) => {
+    const verifyCode = async (code: string, accessToken: string) => {
         setLoading(true);
         setError(null);
         setSuccess(null);
         try {
-            const response = await verifyCodeApi({ email, otp: code }, accessToken);
+            const response = await verifyCodeApi({ otp: code }, accessToken);
             setSuccess(response.message);
             return response.data; // Return the data which includes accessToken
         } catch (error) {
