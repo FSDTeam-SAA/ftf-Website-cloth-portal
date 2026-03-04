@@ -64,11 +64,11 @@ const Verifycode = () => {
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
     const code = otp.join("");
-    if (code.length === 6 && email && token) {
-      const data = await verifyCode(code, email, token);
+    if (code.length === 6 && token) {
+      const data = await verifyCode(code, token);
       if (data?.accessToken) {
         router.push(
-          `/newpassword?email=${encodeURIComponent(email)}&token=${encodeURIComponent(data.accessToken)}`,
+          `/newpassword?token=${encodeURIComponent(data.accessToken)}`,
         );
       }
     } else if (!token) {
@@ -146,11 +146,10 @@ const Verifycode = () => {
                   onChange={(e) => handleChange(e.target.value, i)}
                   onKeyDown={(e) => handleKeyDown(e, i)}
                   className={`w-14 h-14 text-2xl text-center border rounded-lg outline-none transition
-                ${
-                  digit
-                    ? "border-primary text-primary"
-                    : "border-gray-300 text-gray-700"
-                }`}
+                ${digit
+                      ? "border-primary text-primary"
+                      : "border-gray-300 text-gray-700"
+                    }`}
                 />
               ))}
             </div>
@@ -171,11 +170,10 @@ const Verifycode = () => {
                   type="button"
                   onClick={handleResend}
                   disabled={!canResend}
-                  className={`font-medium ${
-                    canResend
+                  className={`font-medium ${canResend
                       ? "text-foreground hover:underline cursor-pointer"
                       : "text-gray-400 cursor-not-allowed"
-                  }`}
+                    }`}
                 >
                   Resend
                 </button>

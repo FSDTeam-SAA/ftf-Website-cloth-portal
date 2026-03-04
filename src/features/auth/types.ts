@@ -30,7 +30,7 @@ export interface ForgotPasswordFormData {
 }
 
 export interface VerifyCodeFormData {
-    email: string;
+    // email: string;
     otp: string;
 }
 
