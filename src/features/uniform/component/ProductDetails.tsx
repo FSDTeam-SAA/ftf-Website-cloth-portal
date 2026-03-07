@@ -112,9 +112,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
               ${product.price}
             </p>
 
-            <p className="text-gray-600 leading-relaxed mb-8">
+            {/* <p className="text-gray-600 leading-relaxed mb-8">
               {product.description}
-            </p>
+            </p> */}
 
             {/* Size Selector */}
             <div className="mb-8">
