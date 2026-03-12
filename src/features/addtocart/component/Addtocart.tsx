@@ -14,6 +14,8 @@ const Addtocart = () => {
   const { data: cartResponse, isLoading: isCartLoading } = useGetCart();
   const { data: userProfile } = useGetMyProfile();
 
+  const [showPopup, setShowPopup] = useState(true);
+
   const cartData = cartResponse?.data;
   const cartItems = useMemo(() => cartData?.products || [], [cartData]);
 
@@ -202,7 +204,7 @@ const Addtocart = () => {
                       <Image
                         src={
                           (item?.productId?.images &&
-                          item.productId.images.length > 0
+                            item.productId.images.length > 0
                             ? item.productId.images[0].url
                             : typeof item?.productId?.image === "string"
                               ? item?.productId?.image
@@ -285,6 +287,32 @@ const Addtocart = () => {
           </div>
         </div>
       </div>
+
+      {showPopup && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4 animate-in fade-in duration-200">
+          <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center animate-in zoom-in-95 duration-200">
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Ready to order?</h3>
+            <p className="text-gray-500 mb-8">
+              Review your cart and proceed to checkout, or continue browsing for more items.
+            </p>
+
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => setShowPopup(false)}
+                className="w-full bg-black text-white font-bold py-4 rounded-xl hover:bg-gray-800 transition-colors"
+              >
+                Checkout
+              </button>
+              <button
+                onClick={() => router.push("/")}
+                className="w-full bg-gray-100 text-gray-900 font-bold py-4 rounded-xl hover:bg-gray-200 transition-colors"
+              >
+                Continue Shopping
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
