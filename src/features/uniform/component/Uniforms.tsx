@@ -7,6 +7,16 @@ import { useRouter } from "next/navigation";
 import { useGetAllRoles } from "../hooks/useGetAllRoles";
 import { Role } from "../types/uniform.types";
 import { useSession } from "next-auth/react";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { LogIn } from "lucide-react";
 
 const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -55,7 +65,7 @@ const overlayVariants: Variants = {
 const Uniforms = () => {
     const router = useRouter();
 
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const accessToken = session?.accessToken || "";
 
     const {
@@ -64,8 +74,11 @@ const Uniforms = () => {
         error: rolesError
     } = useGetAllRoles(accessToken);
 
+    const isUnauthenticated = status === "unauthenticated";
+
     // Handle role click - navigates to the role's product page
     const handleRoleClick = (roleId: string) => {
+        if (isUnauthenticated) return;
         router.push(`/uniforms/${roleId}`);
     };
 
@@ -189,6 +202,38 @@ const Uniforms = () => {
                 {/* Roles Grid Content */}
                 {renderRolesContent}
             </div>
+
+            {/* Login Popup Modal */}
+            <Dialog open={isUnauthenticated}>
+                <DialogContent 
+                    className="sm:max-w-md bg-white border-2 border-primary/20 shadow-2xl rounded-3xl p-8"
+                    showCloseButton={false}
+                    onPointerDownOutside={(e) => e.preventDefault()}
+                    onEscapeKeyDown={(e) => e.preventDefault()}
+                >
+                    <DialogHeader className="flex flex-col items-center gap-6 text-center">
+                        <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mb-2">
+                            <LogIn className="w-10 h-10 text-green-500" />
+                        </div>
+                        <DialogTitle className="text-3xl font-extrabold text-gray-900 tracking-tight">
+                            You are not Logged In
+                        </DialogTitle>
+                        <DialogDescription className="text-lg text-gray-600 max-w-[280px] leading-relaxed">
+                            Please log in to your account to view and purchase uniforms.
+                        </DialogDescription>
+                    </DialogHeader>
+                    
+                    <DialogFooter className="sm:justify-center mt-8">
+                        <Button 
+                            onClick={() => router.push("/login")}
+                            className="bg-green-500 hover:bg-green-600 text-white text-lg font-bold py-7 px-10 rounded-2xl shadow-lg shadow-primary/20 transform transition-all active:scale-95 group"
+                        >
+                            Take me to Login
+                            <LogIn className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };
