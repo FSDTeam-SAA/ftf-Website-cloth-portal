@@ -113,7 +113,7 @@ const Addtocart = () => {
               <span className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-sm">
                 1
               </span>
-              Delivery Information
+              Where will you be picking up the order
             </h2>
             <div className="grid gap-4">
               <label className="block">
@@ -304,7 +304,7 @@ const Addtocart = () => {
                 Checkout
               </button>
               <button
-                onClick={() => router.push("/")}
+                onClick={() => router.push("/uniforms")}
                 className="w-full bg-gray-100 text-gray-900 font-bold py-4 rounded-xl hover:bg-gray-200 transition-colors"
               >
                 Continue Shopping
