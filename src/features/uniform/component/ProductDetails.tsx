@@ -193,6 +193,14 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
                 </span>
               </div>
             </div>
+            <div className="mt-12 p-8 bg-gray-50 rounded-2xl shadow-md">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+                Product Description
+              </h2>
+              <p className="text-gray-700 text-base leading-relaxed">
+                {product.description}
+              </p>
+            </div>
           </div>
         </div>
       </div>
