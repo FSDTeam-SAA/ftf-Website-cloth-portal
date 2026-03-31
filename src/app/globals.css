@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -57,7 +58,7 @@
   --secondary-foreground: #2D2D2D;
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: #b9af9;
+  --accent: #b9af99;
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
