@@ -31,6 +31,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
 
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   if (isLoadingProductById) {
     return (
@@ -49,6 +50,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
   }
 
   const product = productByIdData.data;
+  const selectedImage =
+    product.images[selectedImageIndex] || product.images[0] || null;
 
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -87,17 +90,42 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
       <div className="container mx-auto max-w-6xl">
         <div className="grid md:grid-cols-2 gap-12">
           {/* Image Section */}
-          <div className="bg-[#FAF9F6] rounded-3xl p-12 flex items-center justify-center">
-            <div className="relative w-full aspect-square">
-              <Image
-                src={
-                  product.images[0]?.url || "/images/uniforms/placeholder.png"
-                }
-                alt={product.title}
-                fill
-                className="object-contain"
-              />
+          <div>
+            <div className="bg-[#FAF9F6] rounded-3xl p-12 flex items-center justify-center">
+              <div className="relative w-full aspect-square">
+                <Image
+                  src={selectedImage?.url || "/images/uniforms/placeholder.png"}
+                  alt={product.title}
+                  fill
+                  className="object-contain"
+                />
+              </div>
             </div>
+
+            {product.images.length > 1 && (
+              <div className="flex flex-wrap gap-4 mt-5">
+                {product.images.map((image, index) => (
+                  <button
+                    key={image._id || image.url}
+                    type="button"
+                    onClick={() => setSelectedImageIndex(index)}
+                    className={cn(
+                      "relative w-20 h-20 rounded-xl overflow-hidden border bg-[#FAF9F6] transition-colors",
+                      selectedImageIndex === index
+                        ? "border-black"
+                        : "border-gray-200 hover:border-gray-400",
+                    )}
+                  >
+                    <Image
+                      src={image.url}
+                      alt={`${product.title} ${index + 1}`}
+                      fill
+                      className="object-contain"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Details Section */}
@@ -111,10 +139,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
             <p className="text-3xl font-bold text-gray-900 mb-6">
               ${product.price}
             </p>
-
-            {/* <p className="text-gray-600 leading-relaxed mb-8">
-              {product.description}
-            </p> */}
 
             {/* Size Selector */}
             <div className="mb-8">
@@ -165,7 +189,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
                 >
                   -
                 </button>
-                <span className="mx-4 font-bold min-w-[20px] text-center">
+                <span className="mx-4 font-bold min-w-5 text-center">
                   {quantity}
                 </span>
                 <button
