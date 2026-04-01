@@ -8,6 +8,19 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useGetMyProfile } from "@/features/account/hooks/useGetMyProfile";
 
+const REGION_OPTIONS = [
+  "21 Industrial Blvd. New Castle, DE 19720",
+  "6380 Flank Dr. #600 Harrisburg, PA 17112",
+  "141 Delta Dr. Suite D Pittsburgh, PA 15238",
+  "1000 Prime Place. Hauppauge, NY 11788",
+  "2 Cranberry Rd. #A5 Parsippany, NJ 07054",
+  "5061 Howerton Way. Suite L Bowie, MD 20715",
+  "10189 Maple Leaf Ct. Ashland, VA 23005",
+  "2551 Eltham Ave. Suite L Norfolk, VA 23513",
+] as const;
+
+const DEFAULT_REGION = REGION_OPTIONS[0];
+
 const Addtocart = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -27,7 +40,7 @@ const Addtocart = () => {
   //   }
   // }, [cartResponse, cartData, cartItems]);
 
-  const [selectedRegion, setSelectedRegion] = useState("Dhaka Division");
+  const [selectedRegion, setSelectedRegion] = useState<string>(DEFAULT_REGION);
 
   const handleCheckout = async () => {
     const accessToken = session?.accessToken as string;
@@ -38,9 +51,13 @@ const Addtocart = () => {
       return;
     }
 
+    const safeRegion =
+      REGION_OPTIONS.find((region) => region === selectedRegion) ||
+      DEFAULT_REGION;
+
     const payload = {
       user: userId,
-      region: selectedRegion, // using state for region
+      region: safeRegion,
       totalAmount: cartData?.totalPrice || 0,
       products: cartItems.map((item) => ({
         productId: item?.productId?._id,
@@ -125,30 +142,11 @@ const Addtocart = () => {
                   onChange={(e) => setSelectedRegion(e.target.value)}
                   className="w-full border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-black outline-none transition-all"
                 >
-                  <option value="21 Industrial Blvd. New Castle, DE 19720">
-                    21 Industrial Blvd. New Castle, DE 19720
-                  </option>
-                  <option value="6380 Flank Dr. #600 Harrisburg, PA 17112">
-                    6380 Flank Dr. #600 Harrisburg, PA 17112
-                  </option>
-                  <option value="141 Delta Dr. Suite D Pittsburgh, PA 15238">
-                    141 Delta Dr. Suite D Pittsburgh, PA 15238
-                  </option>
-                  <option value="1000 Prime Place. Hauppauge, NY 11788">
-                    1000 Prime Place. Hauppauge, NY 11788
-                  </option>
-                  <option value="2 Cranberry Rd. #A5 Parsippany, NJ 07054">
-                    2 Cranberry Rd. #A5 Parsippany, NJ 07054
-                  </option>
-                  <option value="5061 Howerton Way. Suite L Bowie, MD 20715">
-                    5061 Howerton Way. Suite L Bowie, MD 20715
-                  </option>
-                  <option value="10189 Maple Leaf Ct. Ashland, VA 23005">
-                    10189 Maple Leaf Ct. Ashland, VA 23005
-                  </option>
-                  <option value="2551 Eltham Ave. Suite L Norfolk, VA 23513">
-                    2551 Eltham Ave. Suite L Norfolk, VA 23513
-                  </option>
+                  {REGION_OPTIONS.map((region) => (
+                    <option key={region} value={region}>
+                      {region}
+                    </option>
+                  ))}
                 </select>
               </label>
             </div>
