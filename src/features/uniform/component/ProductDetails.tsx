@@ -180,6 +180,32 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
               </span>
             </div>
 
+            {(product.fit_cut || product.fabric_material) && (
+              <div className="mb-6 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+                <h3 className="font-semibold text-gray-900 mb-2">
+                  Additional Details
+                </h3>
+                <div className="space-y-1 text-sm text-gray-700">
+                  {product.fit_cut && (
+                    <p>
+                      <span className="font-medium text-gray-900">
+                        Fit Cut:
+                      </span>{" "}
+                      {product.fit_cut}
+                    </p>
+                  )}
+                  {product.fabric_material && (
+                    <p>
+                      <span className="font-medium text-gray-900">
+                        Fabric Material:
+                      </span>{" "}
+                      {product.fabric_material}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Quantity & Add to Cart */}
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex items-center border border-gray-300 rounded px-4 py-3 w-fit">
