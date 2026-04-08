@@ -193,25 +193,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 text-sm text-gray-500 mb-6">
-              <button
-                onClick={handleClear}
-                className="flex items-center gap-1 hover:text-black transition-colors"
-              >
-                Clear <span>×</span>
-              </button>
-              <span>|</span>
-              <span
-                className={cn(
-                  product.availableQuantity > 0
-                    ? "text-green-600"
-                    : "text-red-600 font-medium",
-                )}
-              >
-                {product.availableQuantity > 0 ? "In Stock" : "Out of Stock"}
-              </span>
-            </div>
-
             {(fitCuts.length > 0 || fabricMaterials.length > 0) && (
               <div className="mb-6 space-y-5">
                 {fitCuts.length > 0 && (
@@ -261,6 +242,26 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
                     </div>
                   </div>
                 )}
+                <div className="flex items-center gap-4 text-sm text-gray-500 mb-6">
+                  <button
+                    onClick={handleClear}
+                    className="flex items-center gap-1 hover:text-black transition-colors"
+                  >
+                    Clear <span>×</span>
+                  </button>
+                  <span>|</span>
+                  <span
+                    className={cn(
+                      product.availableQuantity > 0
+                        ? "text-green-600"
+                        : "text-red-600 font-medium",
+                    )}
+                  >
+                    {product.availableQuantity > 0
+                      ? "In Stock"
+                      : "Out of Stock"}
+                  </span>
+                </div>
               </div>
             )}
 
@@ -284,13 +285,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
                 </button>
               </div>
 
-              <button
-                onClick={handleAddToCart}
-                disabled={isAddingToCart}
-                className="bg-black cursor-pointer text-white font-bold py-3 px-12 rounded hover:bg-gray-800 transition-colors disabled:bg-gray-400"
-              >
-                {isAddingToCart ? "Adding..." : "Add to Cart"}
-              </button>
+            
 
               <div className="flex flex-col justify-center">
                 <span className="text-gray-400 text-xs uppercase tracking-wider">
@@ -300,7 +295,17 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
                   ${(product.price * quantity).toFixed(2)}
                 </span>
               </div>
+           
             </div>
+            <div className="py-5">
+                 <button
+                onClick={handleAddToCart}
+                disabled={isAddingToCart}
+                className="bg-black cursor-pointer text-white font-bold py-3 px-12 rounded hover:bg-gray-800 transition-colors disabled:bg-gray-400"
+              >
+                {isAddingToCart ? "Adding..." : "Add to Cart"}
+              </button>
+              </div>
             <div className="mt-12 p-8 bg-gray-50 rounded-2xl shadow-md">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">
                 Product Description
