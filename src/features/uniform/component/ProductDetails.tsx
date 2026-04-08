@@ -30,6 +30,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
     : ["S", "M", "L", "XL", "XXL", "XXXL"];
 
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedFitCut, setSelectedFitCut] = useState<string | null>(null);
+  const [selectedFabricMaterial, setSelectedFabricMaterial] = useState<
+    string | null
+  >(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
@@ -52,10 +56,32 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
   const product = productByIdData.data;
   const selectedImage =
     product.images[selectedImageIndex] || product.images[0] || null;
+  const fitCuts = product.fit_cut
+    ? product.fit_cut
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean)
+    : [];
+  const fabricMaterials = product.fabric_material
+    ? product.fabric_material
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean)
+    : [];
 
   const handleAddToCart = () => {
     if (!selectedSize) {
       toast("Please select a size");
+      return;
+    }
+
+    if (fitCuts.length > 0 && !selectedFitCut) {
+      toast("Please select a fit cut");
+      return;
+    }
+
+    if (fabricMaterials.length > 0 && !selectedFabricMaterial) {
+      toast("Please select a fabric material");
       return;
     }
 
@@ -66,6 +92,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
           productId: product._id,
           quantity: quantity,
           size: selectedSize,
+          ...(selectedFitCut ? { fit_cut: selectedFitCut } : {}),
+          ...(selectedFabricMaterial
+            ? { fabric_material: selectedFabricMaterial }
+            : {}),
         },
       ],
       totalPrice: product.price * quantity,
@@ -82,6 +112,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
 
   const handleClear = () => {
     setSelectedSize(null);
+    setSelectedFitCut(null);
+    setSelectedFabricMaterial(null);
     setQuantity(1);
   };
 
@@ -180,29 +212,55 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
               </span>
             </div>
 
-            {(product.fit_cut || product.fabric_material) && (
-              <div className="mb-6 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-                <h3 className="font-semibold text-gray-900 mb-2">
-                  Additional Details
-                </h3>
-                <div className="space-y-1 text-sm text-gray-700">
-                  {product.fit_cut && (
-                    <p>
-                      <span className="font-medium text-gray-900">
-                        Fit Cut:
-                      </span>{" "}
-                      {product.fit_cut}
-                    </p>
-                  )}
-                  {product.fabric_material && (
-                    <p>
-                      <span className="font-medium text-gray-900">
-                        Fabric Material:
-                      </span>{" "}
-                      {product.fabric_material}
-                    </p>
-                  )}
-                </div>
+            {(fitCuts.length > 0 || fabricMaterials.length > 0) && (
+              <div className="mb-6 space-y-5">
+                {fitCuts.length > 0 && (
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-3">Fit Cut :</h3>
+                    <div className="flex flex-wrap gap-3">
+                      {fitCuts.map((fitCut, index) => (
+                        <button
+                          key={`${fitCut}-${index}`}
+                          type="button"
+                          onClick={() => setSelectedFitCut(fitCut)}
+                          className={cn(
+                            "h-12 px-4 rounded border flex items-center justify-center font-medium transition-colors",
+                            selectedFitCut === fitCut
+                              ? "bg-black text-white border-black"
+                              : "bg-white text-gray-900 border-gray-200 hover:border-black",
+                          )}
+                        >
+                          {fitCut}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {fabricMaterials.length > 0 && (
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-3">
+                      Fabric Material :
+                    </h3>
+                    <div className="flex flex-wrap gap-3">
+                      {fabricMaterials.map((material, index) => (
+                        <button
+                          key={`${material}-${index}`}
+                          type="button"
+                          onClick={() => setSelectedFabricMaterial(material)}
+                          className={cn(
+                            "h-12 px-4 rounded border flex items-center justify-center font-medium transition-colors",
+                            selectedFabricMaterial === material
+                              ? "bg-black text-white border-black"
+                              : "bg-white text-gray-900 border-gray-200 hover:border-black",
+                          )}
+                        >
+                          {material}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
