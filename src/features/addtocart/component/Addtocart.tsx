@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { orderCart } from "../../order/api/order.api";
 import { useGetCart } from "../hooks/useGetCart";
 import { useSession } from "next-auth/react";
@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useGetMyProfile } from "@/features/account/hooks/useGetMyProfile";
+import { useRemoveFromCart } from "../hooks/useRemoveFromCart";
 
 const REGION_OPTIONS = [
   "21 Industrial Blvd. New Castle, DE 19720",
@@ -27,21 +28,31 @@ const Addtocart = () => {
   const { data: session, status } = useSession();
   const { data: cartResponse, isLoading: isCartLoading } = useGetCart();
   const { data: userProfile } = useGetMyProfile();
+  const { mutate: removeFromCart, isPending: isRemovingFromCart } =
+    useRemoveFromCart();
 
   const [showPopup, setShowPopup] = useState(true);
 
   const cartData = cartResponse?.data;
   const cartItems = useMemo(() => cartData?.products || [], [cartData]);
 
-  // useEffect(() => {
-  //   if (cartResponse) {
-  //     console.log("Full Cart API Response:", cartResponse);
-  //     console.log("Cart Data extracted:", cartData);
-  //     console.log("Cart Items extracted:", cartItems);
-  //   }
-  // }, [cartResponse, cartData, cartItems]);
-
   const [selectedRegion, setSelectedRegion] = useState<string>(DEFAULT_REGION);
+
+  const handleRemoveItem = (cartItemId: string) => {
+    if (!cartItemId) {
+      toast.error("Unable to remove this item.");
+      return;
+    }
+
+    removeFromCart(cartItemId, {
+      onSuccess: () => {
+        toast.success("Item removed from cart.");
+      },
+      onError: () => {
+        toast.error("Failed to remove item from cart.");
+      },
+    });
+  };
 
   const handleCheckout = async () => {
     const accessToken = session?.accessToken as string;
@@ -130,8 +141,8 @@ const Addtocart = () => {
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
               <span className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-sm">
                 1
-              </span>
-              Where will you be picking up the order
+              </span>{" "}
+              <span>Where will you be picking up the order</span>
             </h2>
             <div className="grid gap-4">
               <label className="block">
@@ -157,8 +168,8 @@ const Addtocart = () => {
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
               <span className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-sm">
                 2
-              </span>
-              User Information
+              </span>{" "}
+              <span>User Information</span>
             </h2>
             <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
               <p className="text-sm text-gray-500 mb-2">Customer Name</p>
@@ -197,49 +208,67 @@ const Addtocart = () => {
 
             <div className="space-y-6 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
               {cartItems.length > 0 ? (
-                cartItems.map((item, idx) => (
-                  <div key={idx} className="flex gap-4 items-center group">
-                    <div className="relative w-20 h-20 bg-gray-50 rounded-2xl border border-gray-100 p-2 flex-shrink-0 group-hover:border-black transition-colors">
-                      <Image
-                        src={
-                          (item?.productId?.images &&
-                            item.productId.images.length > 0
-                            ? item.productId.images[0].url
-                            : typeof item?.productId?.image === "string"
-                              ? item?.productId?.image
-                              : item?.productId?.image?.url) ||
-                          "/images/placeholder.png"
-                        }
-                        alt={item?.productId?.title || "Product Image"}
-                        fill
-                        className="object-contain"
-                      />
+                cartItems.map((item) => {
+                  let cartImageSrc: string | undefined;
+
+                  if (
+                    item?.productId?.images &&
+                    item.productId.images.length > 0
+                  ) {
+                    cartImageSrc = item.productId.images[0].url;
+                  } else if (typeof item?.productId?.image === "string") {
+                    cartImageSrc = item.productId.image;
+                  } else {
+                    cartImageSrc = item?.productId?.image?.url;
+                  }
+
+                  return (
+                    <div
+                      key={`${item._id}-${item?.productId?._id}`}
+                      className="flex gap-4 items-center group"
+                    >
+                      <div className="relative w-20 h-20 bg-gray-50 rounded-2xl border border-gray-100 p-2 shrink-0 group-hover:border-black transition-colors">
+                        <Image
+                          src={cartImageSrc || "/images/placeholder.png"}
+                          alt={item?.productId?.title || "Product Image"}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-bold text-gray-900 leading-tight mb-1">
+                          {item?.productId?.title}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          Size:{" "}
+                          <span className="font-medium text-gray-700">
+                            {item?.size}
+                          </span>{" "}
+                          | Qty:{" "}
+                          <span className="font-medium text-gray-700">
+                            {item?.quantity}
+                          </span>
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveItem(item._id)}
+                          disabled={isRemovingFromCart}
+                          className="mt-2 text-sm font-medium text-red-600 hover:text-red-700 disabled:opacity-50"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-gray-900">
+                          $
+                          {(
+                            (item?.productId?.price || 0) * item.quantity
+                          ).toFixed(2)}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <p className="font-bold text-gray-900 leading-tight mb-1">
-                        {item?.productId?.title}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Size:{" "}
-                        <span className="font-medium text-gray-700">
-                          {item?.size}
-                        </span>{" "}
-                        | Qty:{" "}
-                        <span className="font-medium text-gray-700">
-                          {item?.quantity}
-                        </span>
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-gray-900">
-                        $
-                        {(
-                          (item?.productId?.price || 0) * item.quantity
-                        ).toFixed(2)}
-                      </p>
-                    </div>
-                  </div>
-                ))
+                  );
+                })
               ) : (
                 <div className="text-center py-10">
                   <p className="text-gray-400 mb-2">
@@ -288,11 +317,14 @@ const Addtocart = () => {
       </div>
 
       {showPopup && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4 animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4 animate-in fade-in duration-200">
           <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center animate-in zoom-in-95 duration-200">
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Ready to order?</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              Ready to order?
+            </h3>
             <p className="text-gray-500 mb-8">
-              Review your cart and proceed to checkout, or continue browsing for more items.
+              Review your cart and proceed to checkout, or continue browsing for
+              more items.
             </p>
 
             <div className="flex flex-col gap-3">
