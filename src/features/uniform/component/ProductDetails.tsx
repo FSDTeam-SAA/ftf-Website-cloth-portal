@@ -322,3 +322,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productId }) => {
 };
 
 export default ProductDetails;
+
+
+// text 
